@@ -1,5 +1,6 @@
 #include <iostream>
 #include <climits>
+#include <algorithm>
 using namespace std;
 
 
@@ -15,20 +16,28 @@ int bedsperday[M];
 for(int i=0; i<M; i++){ cin>> bedsperday[i]; }
 
 // algorithm
+int min_ending_here = INT_MAX;
 
-    int max_so_far = INT_MIN, max_ending_here = 0;
+  // to store the minimum value encountered so far
+  int min_so_far = INT_MAX;
 
-    for (int i = 0; i < M; i++)
-    {
-        max_ending_here = max_ending_here + bedsperday[i];
-        if (max_so_far < max_ending_here)
-            max_so_far = max_ending_here;
+  // traverse the array elements
+  for (int i=0; i<M; i++)
+  {
+      // if min_ending_here > 0, then it could not possibly
+      // contribute to the minimum sum further
+      if (min_ending_here > 0)
+          min_ending_here = bedsperday[i];
 
-        if (max_ending_here < 0)
-            max_ending_here = 0;
-    }
+      // else add the value arr[i] to min_ending_here
+      else
+          min_ending_here += bedsperday[i];
 
-  beds_sum = max_so_far;
+      // update min_so_far
+      min_so_far = min(min_so_far, min_ending_here);
+  }
+
+  beds_sum = min_so_far;
 
 
 
