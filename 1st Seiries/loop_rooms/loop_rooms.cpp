@@ -84,12 +84,14 @@ int check_neighbour(int array[][1000], int i, int j, int N, int M, char door){
 
 int main(int argc, char** argv) { //arg = number of arguments, argv pointer array of pointers to arguments
 
-// ---------------------------------  DECLARATIONS -----------------------------
+// @@@@@@@@@@@@@@@@@@@@@@@@@@----- DECLARTATIONS -----@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
   int N,M;//number of rooms
   char maze_doors[1000][1000];
   int maze_escapes[1000][1000] = { { 0 } }; // initializing to 0
   int escapable_rooms = 0; // number of rooms which can lead to the exit
 
+
+// @@@@@@@@@@2@@@@@@@@@@@@@@@----- READING DATA -----@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
   const char * file_name = argv[1];	//name of file to open
   ifstream File(file_name); 		//open the file
@@ -99,6 +101,9 @@ int main(int argc, char** argv) { //arg = number of arguments, argv pointer arra
       File>>maze_doors[i][j];
     }
   }
+
+
+
   //---------- optional
   cout << "Our initial array:\n";
   for (int i=0; i<N; i++){  //reading all rooms
@@ -110,9 +115,30 @@ int main(int argc, char** argv) { //arg = number of arguments, argv pointer arra
   cout<<"\n";
   //--- optional end
 
+
+// @@@@@@@@@@@@@@@@@@@@@@@@@@@@----- SCANS -----@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+// LEFT -> RIGHT
   //Scan from left to right (top->bottom)
   for (int i=0; i<N; i++){
     for (int j=0; j<M; j++){
+      maze_escapes[i][j]=check_neighbour(maze_escapes, i, j, N, M, maze_doors[i][j]);
+    }
+  }
+
+  //Scan from left to right (bottom->top)
+  for (int i=(N-1); i>=0; i--){
+    for (int j=0; j<M; j++){
+      maze_escapes[i][j]=check_neighbour(maze_escapes, i, j, N, M, maze_doors[i][j]);
+    }
+  }
+
+// --------------------------------------------------------------------------
+
+// RIGHT -> LEFT
+  //Scan from right to left (top-bottom)
+  for (int i=0; i<N; i++){
+    for (int j=(M-1); j>=0; j--){
       maze_escapes[i][j]=check_neighbour(maze_escapes, i, j, N, M, maze_doors[i][j]);
     }
   }
@@ -124,9 +150,12 @@ int main(int argc, char** argv) { //arg = number of arguments, argv pointer arra
     }
   }
 
-  //Scan from bottom to top (left->right)
-  for (int j=0; j<M; j++){
-    for (int i=(N-1); i>=0; i--){
+// --------------------------------------------------------------------------
+
+// TOP->BOTTOM
+  //Scan from top to bottom (left->right)
+  for (int j=1; j<M; j++){
+    for (int i=0; i<N; i++){
       maze_escapes[i][j]=check_neighbour(maze_escapes, i, j, N, M, maze_doors[i][j]);
     }
   }
@@ -138,6 +167,99 @@ int main(int argc, char** argv) { //arg = number of arguments, argv pointer arra
     }
   }
 
+// --------------------------------------------------------------------------
+
+// BOTTOM->TOP
+  //Scan from bottom to top (left->right)
+  for (int j=0; j<M; j++){
+    for (int i=(N-1); i>=0; i--){
+      maze_escapes[i][j]=check_neighbour(maze_escapes, i, j, N, M, maze_doors[i][j]);
+    }
+  }
+
+  //Scan from bottom to top (right->left)
+  for (int j=(M-1); j>=0; j--){
+    for (int i=(N-1); i>=0; i--){
+      maze_escapes[i][j]=check_neighbour(maze_escapes, i, j, N, M, maze_doors[i][j]);
+    }
+  }
+
+  // @@@@@@@@@@@@@@@@@@@@@@@@@@@@----- SCANS AGAIN-----@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+
+  // LEFT -> RIGHT
+    //Scan from left to right (top->bottom)
+    for (int i=0; i<N; i++){
+      for (int j=0; j<M; j++){
+        maze_escapes[i][j]=check_neighbour(maze_escapes, i, j, N, M, maze_doors[i][j]);
+      }
+    }
+
+    //Scan from left to right (bottom->top)
+    for (int i=(N-1); i>=0; i--){
+      for (int j=0; j<M; j++){
+        maze_escapes[i][j]=check_neighbour(maze_escapes, i, j, N, M, maze_doors[i][j]);
+      }
+    }
+
+  // --------------------------------------------------------------------------
+
+  // RIGHT -> LEFT
+    //Scan from right to left (top-bottom)
+    for (int i=0; i<N; i++){
+      for (int j=(M-1); j>=0; j--){
+        maze_escapes[i][j]=check_neighbour(maze_escapes, i, j, N, M, maze_doors[i][j]);
+      }
+    }
+
+    //Scan from right to left (bottom->top)
+    for (int i=(N-1); i>=0; i--){
+      for (int j=(M-1); j>=0; j--){
+        maze_escapes[i][j]=check_neighbour(maze_escapes, i, j, N, M, maze_doors[i][j]);
+      }
+    }
+
+  // --------------------------------------------------------------------------
+
+  // TOP->BOTTOM
+    //Scan from top to bottom (left->right)
+    for (int j=1; j<M; j++){
+      for (int i=0; i<N; i++){
+        maze_escapes[i][j]=check_neighbour(maze_escapes, i, j, N, M, maze_doors[i][j]);
+      }
+    }
+
+    //Scan from top to bottom (right->left)
+    for (int j=(M-1); j>=0; j--){
+      for (int i=0; i<N; i++){
+        maze_escapes[i][j]=check_neighbour(maze_escapes, i, j, N, M, maze_doors[i][j]);
+      }
+    }
+
+  // --------------------------------------------------------------------------
+
+  // BOTTOM->TOP
+    //Scan from bottom to top (left->right)
+    for (int j=0; j<M; j++){
+      for (int i=(N-1); i>=0; i--){
+        maze_escapes[i][j]=check_neighbour(maze_escapes, i, j, N, M, maze_doors[i][j]);
+      }
+    }
+
+    //Scan from bottom to top (right->left)
+    for (int j=(M-1); j>=0; j--){
+      for (int i=(N-1); i>=0; i--){
+        maze_escapes[i][j]=check_neighbour(maze_escapes, i, j, N, M, maze_doors[i][j]);
+      }
+    }
+
+
+
+
+
+
+
+
   //---------- optional
   cout << "What we get:\n";
   for (int i=0; i<N; i++){  //reading all rooms
@@ -147,6 +269,8 @@ int main(int argc, char** argv) { //arg = number of arguments, argv pointer arra
     }
     cout<<"\n";
   }
+
+  // @@@@@@@@@@@@@@@@@@@@@@@@----- PRINTING OUTPUT -----@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
   cout<<"Escapable Rooms: "<<escapable_rooms<<"\n";
   //--- optional end
 
