@@ -5,3 +5,4 @@ maze4.txt 4
 maze5.txt 3
 maze6.txt 5
 maze7.txt 31
+maze8.txt 51
