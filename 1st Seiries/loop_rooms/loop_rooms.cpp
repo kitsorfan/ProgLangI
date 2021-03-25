@@ -103,6 +103,8 @@ int check_path(char ** doors, int **escapes, int i, int j, int N, int M){
 }
 
 
+
+
 int main(int argc, char** argv) { //arg = number of arguments, argv pointer array of pointers to arguments
 
 // @@@@@@@@@@@@@@@@@@@@@@@@@@----- DECLARTATIONS -----@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
@@ -135,44 +137,20 @@ int main(int argc, char** argv) { //arg = number of arguments, argv pointer arra
   }
 
 
-
-
-  //---------- optional
-  cout << "Our initial array:\n";
-  for (int i=0; i<N; i++){  //reading all rooms
-    for (int j=0; j<M; j++){
-      cout<<maze_doors[i][j]<<" ";
-    }
-    cout<<"\n";
-  }
-  cout<<"\n";
-  //--- optional end
-
   // @@@@@@@@@@2@@@@@@@@@@@@@@@----- SCANNING -----@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-  
+
 for (int i=0;i<N;i++){
   for (int j=0;j<M;j++){
     if (maze_escapes[i][j]==0){
       int color = check_path(maze_doors, maze_escapes, i, j, N, M); //the color (1 or 3) to "paint" the path
       maze_escapes[i][j]=color; //useless, but we avoid warning
-      count++;
     }
+    if (maze_escapes[i][j]==1) escapable_rooms++;
   }
 }
 
-
-  //---------- optional
-  cout << "What we get:\n";
-  for (int i=0; i<N; i++){  //reading all rooms
-    for (int j=0; j<M; j++){
-      cout<<maze_escapes[i][j]<<" ";
-      if (maze_escapes[i][j]==1) escapable_rooms++;
-    }
-    cout<<"\n";
-  }
-
   // @@@@@@@@@@@@@@@@@@@@@@@@----- PRINTING OUTPUT -----@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-  cout<<"Escapable Rooms: "<<escapable_rooms<<"\n";
+  cout<<escapable_rooms<<"\n";
   //--- optional end
 
   return 0;
