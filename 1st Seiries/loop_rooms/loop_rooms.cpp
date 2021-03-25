@@ -15,29 +15,14 @@ using namespace std;
 
 /* ----------------------- MAIN IDEA -------------------------------------------
 
-We create a N x M array, called maze_doors. Each cell is marked with UDRL (up, down, right, left).
+We create a N x M dynamic array, called maze_doors. Each cell is marked with UDRL (up, down, right, left).
 We read the given file (from arguments) and fill that maze..
 
-Then we create a N x M array, called maze_escapes, with initial values '0' on each cell.
-We will scan 4 times:
-top->bottom
-bottom->top
-left->right
-right->left
+Then we create a N x M dynamic array, called maze_escapes, with initial values '0' to each cell.
 
-On each scan we check if each cell points to a "good" neighbour, who can escape.
-A "good" neighbour is marked with '1' in the maze_escapes array.
-If so, we mark this cell with 1, else with '2', and we continue the scan.
-
-As we said before, we will scan the maze 4 times, 1 in every direction.
-Ofcourse, we  must specially handle the first and last rows and columns.
-
-At the end, we will scan the maze one more time to count the '2's.
-That will be our final response.
-
-
-Note: Possibly it is true that '0'==='2'; we will check out later.
-
+We use an auilary recursive function that follows the path of every cell.
+We check whether the next room is already "visited", "bad" or "good".
+We mark "visited" rooms with 2, "bad" with 3, "good" with 1.
 --------------------------------------------------------------------------------
 */
 
@@ -54,8 +39,10 @@ int check_path(char ** doors, int **escapes, int i, int j, int N, int M){
   escapes[i][j] = 2; //we have visited this room
 
   char door = doors[i][j];
+
   switch(door) {
-      case 'L': // Left Door
+    //----------- left door -------------
+      case 'L':
         if (j==0)  {
           escapes[i][j] = 1;
           return 1;
@@ -66,7 +53,8 @@ int check_path(char ** doors, int **escapes, int i, int j, int N, int M){
         }
         break;
 
-      case 'R': // Right Door
+    //----------- right door -------------
+      case 'R':
         if (j==(M-1)) {
           escapes[i][j] = 1;
           return 1;
@@ -77,7 +65,8 @@ int check_path(char ** doors, int **escapes, int i, int j, int N, int M){
         }
         break;
 
-      case 'U': // Up Door
+      //----------- up door -------------
+      case 'U':
         if (i==0){
           escapes[i][j] = 1;
           return 1;
@@ -88,7 +77,8 @@ int check_path(char ** doors, int **escapes, int i, int j, int N, int M){
         }
         break;
 
-      case 'D': // Down Door
+      //----------- down door -------------
+      case 'D':
         if (i==(N-1)){
           escapes[i][j] = 1;
           return 1;
@@ -99,7 +89,7 @@ int check_path(char ** doors, int **escapes, int i, int j, int N, int M){
         }
         break;
     }
-    return 0;
+    return 0; //useless, to avoid warnings
 }
 
 
