@@ -1,0 +1,7 @@
+6 7
+D R L U L L L
+D R R D D R U
+D U D L D U R
+D U D R L U L
+D U R R R R U
+R U R L L L L
