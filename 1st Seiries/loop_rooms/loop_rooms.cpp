@@ -102,6 +102,7 @@ int main(int argc, char** argv) { //arg = number of arguments, argv pointer arra
   char **maze_doors;
   int **maze_escapes; // initializing to 0
   int escapable_rooms = 0; // number of rooms which can lead to the exit
+  int non_escapable_rooms = 0;
 
 
 // @@@@@@@@@@2@@@@@@@@@@@@@@@----- READING DATA -----@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
@@ -140,7 +141,8 @@ for (int i=0;i<N;i++){
 }
 
   // @@@@@@@@@@@@@@@@@@@@@@@@----- PRINTING OUTPUT -----@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-  cout<<escapable_rooms<<"\n";
+  non_escapable_rooms=N*M-escapable_rooms;
+  cout<<non_escapable_rooms<<"\n";
   //--- optional end
 
   return 0;
