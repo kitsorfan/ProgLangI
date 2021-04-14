@@ -143,7 +143,6 @@ for (int i=0;i<N;i++){
   // @@@@@@@@@@@@@@@@@@@@@@@@----- PRINTING OUTPUT -----@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
   non_escapable_rooms=N*M-escapable_rooms;
   cout<<non_escapable_rooms<<"\n";
-  //--- optional end
 
   return 0;
 }
