@@ -44,50 +44,27 @@ long long int findInd(vector<pair<long long int, long long int> >& preSum, long 
 // greater than or equal to hospitals.
 long long int MaxGoodDays(long long int arr[], long long int n)
 {
-	long long int i;
 	long long int maxlen = 0;
-
-	// Vector to store pair of prefix sum
-	// and corresponding ending index value.
 	vector<pair<long long int, long long int> > preSum;
-
-	// To store current value of prefix sum.
 	double sum = 0;
-
-	// To store minimum index value in range
-	// 0..i of preSum vector.
 	long long int minInd[n];
-
-	// Insert values in preSum vector.
-	for (i = 0; i < n; i++) {
+	for (long long int i = 0; i < n; i++) {
 		sum = sum + arr[i];
 		preSum.push_back({ sum, i });
 	}
 
 	sort(preSum.begin(), preSum.end(), compare);
-
-	// Update minInd array.
 	minInd[0] = preSum[0].second;
 
-	for (i = 1; i < n; i++) {
+	for (long long int i = 1; i < n; i++) {
 		minInd[i] = min(minInd[i - 1], preSum[i].second);
 	}
 
 	sum = 0;
-	for (i = 0; i < n; i++) {
+	for (long long int i = 0; i < n; i++) {
 		sum = sum + arr[i];
-
-		// If sum is greater than or equal to 0,
-		// then answer is i+1.
 		if ((sum/((i+1)*n)) >= 0)
 			maxlen = i + 1;
-
-		// If sum is less than hospitals, then find if
-		// there is a prefix array having sum
-		// that needs to be added to current sum to
-		// make its value greater than or equal to hospitals.
-		// If yes, then compare length of updated
-		// subarray with maximum length found so far.
 		else {
 			long long int ind = findInd(preSum, n, sum);
 			if (ind != -1 && minInd[ind] < i)
