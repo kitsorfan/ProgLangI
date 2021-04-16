@@ -1,134 +1,105 @@
+//auxilary code from: https://www.geeksforgeeks.org/longest-subarray-having-average-greater-than-or-equal-to-x/?fbclid=IwAR1Prq2UCG54AYjv8w-P6kHwulyoQO3E4kgbCCwq8Ipq3NY7GZAPKbIRlw0
+//Literatelly we changed just few lines of code...
+
+
 #include <iostream>
-#include <climits>
+#include <vector>
 #include <algorithm>
+#include <fstream>
+#include <climits>
+
 using namespace std;
 
 
-int main(){
-int N , M ;
+// Comparison function used to sort preSum vector.
+bool compare(const pair<long long int, long long int>& a, const pair<long long int, long long int>& b)
+{
+	if (a.first == b.first)
+		return a.second < b.second;
+	return a.first < b.first;
+}
 
-cin >> M >> N ;                   // M = max days , N = #hospitals
+// Function to find (binary search) index in preSum vector upto which
+// all prefix sum values are less than or equal to val.
+long long int findInd(vector<pair<long long int, long long int> >& preSum, long long int n, long long int val)
+{
+	long long int l = 0;
+	long long int h = n - 1;
+	long long int mid;
+	long long int ans = -1;
 
-int beds_sum;
+	while (l <= h) {
+		mid = (l + h) / 2;
+		if (preSum[mid].first <= val) {
+			ans = mid;
+			l = mid + 1;
+		}
+		else
+			h = mid - 1;
+	}
+	return ans;
+}
 
-int bedsperday[M];
+// Function to find Longest subarray having average
+// greater than or equal to hospitals.
+long long int MaxGoodDays(long long int arr[], long long int n)
+{
+	long long int maxlen = 0;
+	vector<pair<long long int, long long int> > preSum;
+	double sum = 0;
+	long long int minInd[n];
+	for (long long int i = 0; i < n; i++) {
+		sum = sum + arr[i];
+		preSum.push_back({ sum, i });
+	}
 
-for(int i=0; i<M; i++){ cin>> bedsperday[i]; }
+	sort(preSum.begin(), preSum.end(), compare);
+	minInd[0] = preSum[0].second;
 
-// algorithm
-int min_ending_here = INT_MAX;
+	for (long long int i = 1; i < n; i++) {
+		minInd[i] = min(minInd[i - 1], preSum[i].second);
+	}
 
-  // to store the minimum value encountered so far
-  int min_so_far = INT_MAX;
+	sum = 0;
+	for (long long int i = 0; i < n; i++) {
+		sum = sum + arr[i];
+		if ((sum/((i+1)*n)) >= 0)
+			maxlen = i + 1;
+		else {
+			long long int ind = findInd(preSum, n, sum);
+			if (ind != -1 && minInd[ind] < i)
+				maxlen = max(maxlen, i - minInd[ind]);
+		}
+	}
 
-  // traverse the array elements
-  for (int i=0; i<M; i++)
-  {
-      // if min_ending_here > 0, then it could not possibly
-      // contribute to the minimum sum further
-      if (min_ending_here > 0)
-          min_ending_here = bedsperday[i];
+	return maxlen;
+}
 
-      // else add the value arr[i] to min_ending_here
-      else
-          min_ending_here += bedsperday[i];
 
-      // update min_so_far
-      min_so_far = min(min_so_far, min_ending_here);
+int main(int argc, char** argv) { //arg = number of arguments, argv pointer array of pointers to arguments
+
+// @@@@@@@@@@@@@@@@@@@@@@@@@@----- DECLARTATIONS -----@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+  long long int days, hospitals;//number of days and hospitals
+  long long int *discharges; //array to store discharges of each day (how many people leave or "leave")
+
+  long long int temp = 0;	//temp value for input
+
+
+// @@@@@@@@@@2@@@@@@@@@@@@@@@----- READING DATA -----@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+  const char * file_name = argv[1];	//name of file to open
+  ifstream File(file_name); 		//open the file
+  File>>days>>hospitals;
+
+  discharges = new long long int[days];   //creating dynamic array
+
+  for (long long int j=0; j<days; j++){
+    File>>temp;
+    discharges[j]=-temp-hospitals; //we add the negative value (to calculate positive sums after)
   }
 
-  beds_sum = min_so_far;
-
-
-
-cout<< beds_sum <<endl;
-
-// sum = beds_sum / N*arr_sum ;
-
-
-//  if (sum > max_sum)
-// max_sum = sum ;
+	cout << MaxGoodDays(discharges, days)<<"\n";
 
 }
 
-// algorithm
-double min_ending_here = DBL_MAX;
-double min_so_far_d = DBL_MAX;
-double min_so_far = DBL_MAX;
-double length;
-
-
-int max_length;
-double sum=0;
 }
-*/
-
-/*
-for (int i=0; i<M; i++)
-{
-      // if min_ending_here > 0, then it could not possibly
-      // contribute to the minimum sum further
-      if (min_ending_here > 0)
-      {    min_ending_here = bedsperday[i];
-          length=0;
-      }
-      // else add the value arr[i] to min_ending_here
-      else
-      {  min_ending_here += bedsperday[i];
-         length++ ;
-      }
-      // update min_so_far
-
-      min_so_far_d = max( (min_so_far_d/length) , min_ending_here);
-cout<<min_so_far_d<<endl;
-      min_so_far = min(min_so_far , min_ending_here);
-}
-
-//  beds_sum = min_so_far;
-
-
-cout<< length<<endl;
-cout<< min_so_far <<endl;
-cout<<min_so_far_d<<endl;
-// sum = beds_sum / N*arr_sum ;
-*/
-
-//  if (sum > max_sum)
-// max_sum = sum ;
-
-
-
-
-// algorithm
-double min_ending_here = DBL_MAX;
-double min_so_far_d = DBL_MAX;
-double min_so_far = DBL_MAX;
-double length;
-
-
-int max_length;
-double sum=0;
-
-for (int i=0; i<M; i++)
-{
-      if (fun(min_ending_here,N*length) < 1)
-      {   min_ending_here = bedsperday[i];
-          length=0;
-      }
-
-      else
-      {
-         if( fun(min_ending_here,N*length) > sum ) {
-
-           sum = fun(min_ending_here,N*length);
-           max_length=length;
-          }
-
-          length++ ;
-          min_ending_here += bedsperday[i];
-
-      }
-}
-cout<<sum<<endl;
-
-cout<< max_length<<endl;
