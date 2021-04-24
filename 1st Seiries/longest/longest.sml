@@ -20,7 +20,7 @@ fun parse file =
         Option.valOf (TextIO.scanStream (Int.scan StringCvt.DEC) input)
        
         (* A function to read N (parameter) days from the open file. *)
-        fun readDays 0 acc = rev acc                (* Note: Replace with 'rev acc' for proper order. *)
+        fun readDays 0 acc = rev acc             
         |   readDays i acc = readDays (i - 1) (readInt inStream :: acc)
 
 
@@ -35,8 +35,8 @@ fun parse file =
 
 (*@@@@@@@@@@@@@@@@@@- Prefix and Index -@@@@@@@@@@@@@@@@@@*)
 (* Function that takes a list and returns a tuple with prefix list and the index of this list *)
-fun prefixAndIndex [(a, i)] 
-
+fun index ((x::more),n) = (x,n)::(index (more,n+1))
+| index _ = nil
 
 
 
@@ -51,10 +51,10 @@ fun longest inputFile =
       val discharges = #3 inputTuple         (* discharges is how many leave the hospitals everyday. *)
       
     val discharges_sub_hospitals = map (fn x => ~x - hospitals) discharges (* we make the opposite (how many leave as a positive) and we subtract the number of hospitals *)
-
+    val indexed_discharges = index (discharges_sub_hospitals,0)
     
   in
-      discharges_sub_hospitals
+     indexed_discharges
 
   end;
 
