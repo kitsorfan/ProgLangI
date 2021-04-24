@@ -77,14 +77,14 @@ fun mergesort nil = nil
   | onlyIndex nil = nil
 
 
-(* fun findMaxDif ((a::rest), min, maxDif) = 
+fun findMaxDif ((a::rest), min, maxDif) = 
   let 
-     val if (a<=min) then min = a 
-    else maxDif = min - a
+     val neo_min = if (a<min) then a else min
+     val neo_maxDif = if  ((a-min)>maxDif) then (a-min) else maxDif
   in
-    findMaxDif(rest,min,maxDif)
+    findMaxDif(rest,neo_min,neo_maxDif)
   end
-| ([],min,maxDif) = maxDif *)
+| findMaxDif ([],min,maxDif) = maxDif
 
 
 
@@ -102,15 +102,17 @@ fun longest inputFile =
     val indexed_prefixed_discharges = indexAndPrefix (discharges_sub_hospitals,1,0) (* we take our discharges list and make every element a tuple: (element, index). We also create at the same time prefixes. We start from index 1 and sum 0*)
     val indexed_array = (0,0)::indexed_prefixed_discharges;
     val sorted_array = mergesort indexed_array
+    val takeIndex = onlyIndex sorted_array
+    val answer = findMaxDif (takeIndex, (hd takeIndex), 0)
 
   in
-     onlyIndex sorted_array
+     (answer)
 
   end;
 
 (* Useless code, only for testing reasons 
  To test the code just type "sml <loop_rooms.sml" on Terminal*)
-  longest "tests/longest.in1"; 
+  longest "tests/longest.in14"; 
 
 (*
 1. Parse the file
