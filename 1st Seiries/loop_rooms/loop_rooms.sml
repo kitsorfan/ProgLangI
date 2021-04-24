@@ -5,8 +5,12 @@ https://courses.softlab.ntua.gr/pl1/2013a/Exercises/countries.sml *)
 
 (**@@@@@@@@@@@@@@@@@@- Parse the file -@@@@@@@@@@@@@@@@@@*)
 (* function that takes the name  *)
+
+
+
 fun parse file =  
     let
+
       	val inStream = TextIO.openIn file     (* open the file and "put it" in inStream (note: in ML we do into variables, we have no variables) *)
 
         fun readLines acc =                   (* read *)
@@ -15,9 +19,7 @@ fun parse file =
           in
             if newLineOption = NONE 
             then (List.rev acc)
-            else ( 
-              readLines ( explode (List.filter (f = fn x=> if x <> "\r" then x) newLineOption ) :: acc )
-              )
+            else (readLines List.filter (fn x=>if x=y then [x] else [])( explode  (valOf newLineOption ):: acc ))
         end;
 
         val grid = readLines []   (* call function readLines with empty list as parameter*)
