@@ -1,3 +1,7 @@
+### VisualStudioCode ###
+.vscode/*
+
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -184,3 +188,4 @@ relative/path/to/dir/filename.extension
 
 # Ignore a file without extension
 relative/path/to/dir/anotherfile
+
