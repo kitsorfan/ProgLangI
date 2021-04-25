@@ -1,0 +1,5 @@
+longest.in1 -> 5
+longest.in2 -> 20
+longest.in4 -> 100
+longest.in7 -> 236
+longest.in14 -> 1840
