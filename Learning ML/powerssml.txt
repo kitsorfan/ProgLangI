@@ -1,0 +1,153 @@
+fun dist (x,y,z) =                      //βρίσκει distance 
+case ((x div 2)=y) of true =>z
+| false => dist(x div 2 , y ,z+1);
+
+
+////////////////////////////////////////////////////////
+MY CODE 
+
+val sum=K;
+
+
+
+
+fun findbin x N =
+if(N>0) then x::(N=N mod 2)  
+else x::null
+
+//μία φορά
+fun addto (l , N) =
+if ((N mod 2) >0) then l@[N]
+else l;  
+
+
+// while (decimal to binary list)
+
+fun binum 0 = nil 
+|         N = (N mod 2) :: binum(N div 2);
+
+
+//find number of aces of the list above
+
+fun find x = ( x = 1 );
+List.length ( List.filter find l ); 
+
+πιο σύντομα : List.length (List.filter (fn x=>(x=1)) l);
+
+ΑΛΛΙΩΣ:
+fun occurrences(nil, n)=0
+|   occurrences(ls, n) =
+    if hd(ls)=n then occurrences(tl(ls),n) + 1
+    else occurrences(tl(ls),n)+0;
+
+π.χ occurrences([0,1,1,1,1] , 1);
+
+
+
+
+
+
+fun suml (nil) =0
+|   suml (hd::tl) = hd + suml(tl); 
+
+
+fun myf ( (hd::sec::tl) , sum ) = 
+          if ( suml(hd::sec::tl) = sum) then (hd::sec::tl)
+          else
+          if (sec=0) then  myf( (sec::tl) , suml(hd::sec::tl) ) 
+          else myf( (hd+2)::(sec-1)::tl , suml( (hd+2)::(sec-1)::tl) )  ;
+
+
+
+
+fun my2f 
+
+
+fun myf (x1::x2) = 
+if ( map ( fn x => x=1 )  [x1,x2] )==[false , true] then my2f 
+else () ;
+
+
+
+
+fun mf list = 
+if(list = nil) then list       
+else  list@nil; 
+
+
+
+fun  myf ( (hd::sec::t) , sum ) = 
+              
+          if ( sum = 4) then (hd::sec::t)
+          else          
+          if (not(sec=0)) then  myf( (hd+2)::(sec-1)::t , sum+1 ) 
+          else  myf( (sec::t) , sum  ); 
+          
+
+
+
+
+
+fun f list n =
+let 
+(x1::x2::xs)=list
+(h1::h2::hs)=list
+sum=n
+in
+
+fun myf ( (x1::x2::xs) , (h1::h2::hs) , (s1::s2::s3) ,sum ) =
+if(sum=6) then h1::h2::hs
+else
+if(not(x2=0)) then myf ( (x2::xs) , ( (h1+2)::(h2-1)::hs ) , (              .sum+1 )
+else myf ((x2::xs) , (h1::h2::hs) ,  sum)  
+
+end;
+
+
+
+
+
+
+fun myf ((x1::0::xs), N) = myf(0::xs)
+ |  myf ((x1::x2::xs),sum )  = 
+ let
+val(x,y) = myf ( (x1::x2::xs) ,sum) 
+in 
+  ((x1+2::x2-1::xs) sum + 1 )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+fun f x  y => x::y;
+
+List.foldr f 2 [1,2,3,4];
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
