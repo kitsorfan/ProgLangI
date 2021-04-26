@@ -10,7 +10,7 @@
 (* Solution based on the article: https://stackoverflow.com/questions/13476927/longest-contiguous-subarray-with-average-greater-than-or-equal-to-k 
 
 Different Approach: 
-  According to the article, after sorting the array we must do a swap to the initial array and for each prefix do a binary search at the new array. We avoided that by findinx the maximum Difference at the indixes in the new array. See the example.
+  According to the article, after sorting the array we must do a swap to the initial array and for each prefix-index we do a binary search at the new array. We avoided that by finding the maximum Difference at the indixes in the new array. See the example.
 
 
 Steps:
@@ -40,7 +40,7 @@ After:
 
   Step 5:  [(-74,8), (-70,11), (-67,5), (-64,6), (-62,9), (-55,7), (-54,10), (-53,4), (-49,3), (-45,1), (-38,2), (0,0)] //sort by prefixes
 
-  Step 6: [8, 11, 5, 6, 9, 7, 10, 4, 3, 1, 2, 0]    //we remove prefixex, keep only indexes
+  Step 6: [8, 11, 5, 6, 9, 7, 10, 4, 3, 1, 2, 0]    //we remove prefixes, we keep only indexes
 
   Step 7: we do a left to right swap. 
           A. We start with min=8 and maxDif = 0. 
