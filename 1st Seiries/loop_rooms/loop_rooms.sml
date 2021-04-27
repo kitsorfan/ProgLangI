@@ -39,69 +39,36 @@ fun removeUseless (nil,a) = nil
 |   removeUseless (doublelist,a) = 
     List.take(hd doublelist,a)::removeUseless(tl doublelist, a)
 
-(*@@@@@@@@@@@@@@@@@@- 2. DoTheJob -@@@@@@@@@@@@@@@@@@*)
+
+fun updateElement (arr, i, j, value) = 
+  let 
+    val a = Array2.update (arr, i, j, value)
+    val _ = print ("Who you gonna call "^Int.toString(i)^" "^Int.toString(j)^" "^Char.toString(value)^"\n")
+    
+  in 
+    value
+  end;
+
+(*@@@@@@@@@@@@@@@@@@- 3. DoTheJob -@@@@@@@@@@@@@@@@@@*)
 fun escapablePath (arr, i, j, n, m) = 
     let
       val element = Array2.sub (arr, i, j)
+      val response = updateElement(arr, i, j, #"V")
+      val hi = print ("["^Int.toString(i)^", "^Int.toString(j)^ "] of ["^Int.toString(n)^", "^Int.toString(m)^"]  had "^Char.toString(element)^", now has "^Char.toString(response)^"\n")
 
-      val response = if (element = "#E") then "#E"
-      else if (element = "#V") then "#V"
-      else (
-        Array2.update(arr, i, j, "#V");
-        (* //----------- left door ------------- *)
-        if (element="#L") then (  
-          if (j=0)  then
-          (
-            Array2.update(arr, i, j, "#E");
-            "#E"
-          )
-          else (
-              val newresponse = escapablePath(arr, i, j-1, n, m);
-              Array2.update(arr, i, j, newresponse);
-              newresponse
+      fun checkElement (#"E",_,_) = updateElement(arr, i, j, #"E")
+      | checkElement (#"V",_,_) = updateElement(arr, i, j,  #"V")
+      | checkElement (#"L",_,0) = updateElement(arr, i, j, #"E")
+      | checkElement (#"R",_,a) = if (j=m) then updateElement(arr, i, j,  #"E") else escapablePath(arr, i,(j+1),n,m)
+      | checkElement (#"U",0,_) = updateElement(arr, i, j, #"E")
+      | checkElement (#"D",b,_) = if (b=n) then updateElement(arr, i, j, #"E") else escapablePath(arr, (i+1),j,n,m)      
+      | checkElement (#"L",_,_) = escapablePath(arr, i,(j-1),n,m)
+      | checkElement (#"U",_,_) = escapablePath(arr, (i-1),j,n,m)
 
-            )
-          )
-        (* //----- ------ right door ------------- *)
-        else if (element="#R") then (  
-          if (j=(m-1))  then
-          (
-            Array2.update(arr, i, j, "#E");
-            "#E"
-          )
-          else (
-              response = escapablePath(arr, i, j+1, n, m);
-              Array2.update(arr, i, j, response)
-            )
-          )
-       (* //------------ up door ------------- *)
-        else if (element="#U") then (  
-          if (i=0)  then
-          (
-            Array2.update(arr, i, j, "#E");
-            response = "#E"
-          )
-          else (
-              response = escapablePath(arr, i-1, j, n, m);
-              Array2.update(arr, i, j, response)
-            )
-          )
-          (* //------------ up door ------------- *)
-        else (  
-          if (i=n-1)  then
-          (
-            Array2.update(arr, i, j, "#E");
-            response = "#E"
-          )
-          else (
-              response = escapablePath(arr, i+1, j, n, m);
-              Array2.update(arr, i, j, response)
-            )
-          )
-      )
-      
+            
     in
-      response
+      checkElement(element,2,2)
+      
     end
 
         (* if ((i+1)=n) then 
@@ -127,9 +94,9 @@ fun loop_rooms inputFile =
     (* val first  = (fn(a::b) => a) ((fn (x::y) => y) grid) *)
 
     val doubleArray = Array2.fromList cleanGrid
+    val response = escapablePath (doubleArray, 2, 2, (n-1), (m-1))
   in
-     
-  Array2.n doubleArray
+    response
   end;
 
 (* Useless code, only for testing reasons 
@@ -174,3 +141,78 @@ fun loop_rooms inputFile =
               Array2.update(arr, i, j, response)
             )
           ) *)
+
+
+          (*
+        let 
+        fun giveResponse x =
+          x= if (element = "#E") then (
+            "#E"
+          )
+          else (if element ="#V") then (
+            "#V"
+          )
+
+        in 
+
+        end 
+        
+        
+      response = if (element = "#E") then "#E"
+      else if (element = "#V") then "#V"
+      else (
+        Array2.update(arr, i, j, "#V");
+        (* //----------- left door ------------- *)
+        if (element="#L") andalso (j=0) then (  
+          (
+            Array2.update(arr, i, j, "#E");
+            "#E"
+          )
+          else (
+              val newresponse = escapablePath(arr, i, j-1, n, m);
+              Array2.update(arr, i, j, newresponse);
+              newresponse
+
+            )
+          )
+        (* //----- ------ right door ------------- *)
+        else if (element="#R") then (  
+          if (j=(m-1))  then
+          (
+            Array2.update(arr, i, j, "#E");
+            "#E"
+          )
+          else (
+              response = escapablePath(arr, i, j+1, n, m);
+              Array2.update(arr, i, j, response);
+              response
+            )
+          )
+       (* //------------ up door ------------- *)
+        else if (element="#U") then (  
+          if (i=0)  then
+          (
+            Array2.update(arr, i, j, "#E");
+            response = "#E"
+            "#E";
+          )
+          else (
+              response = escapablePath(arr, i-1, j, n, m);
+              Array2.update(arr, i, j, response)
+              response
+            )
+          )
+          (* //------------ up door ------------- *)
+        else (  
+          if (i=n-1)  then
+          (
+            Array2.update(arr, i, j, "#E");
+            response = "#E"
+          )
+          else (
+              response = escapablePath(arr, i+1, j, n, m);
+              Array2.update(arr, i, j, response)
+            )
+          )
+      )
+      *)
