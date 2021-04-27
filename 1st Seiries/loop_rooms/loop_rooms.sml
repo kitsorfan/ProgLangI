@@ -39,8 +39,79 @@ fun removeUseless (nil,a) = nil
 |   removeUseless (doublelist,a) = 
     List.take(hd doublelist,a)::removeUseless(tl doublelist, a)
 
+(*@@@@@@@@@@@@@@@@@@- 2. DoTheJob -@@@@@@@@@@@@@@@@@@*)
+fun escapablePath (arr, i, j, n, m) = 
+    let
+      val element = Array2.sub (arr, i, j)
 
+      val response = if (element = "#E") then "#E"
+      else if (element = "#V") then "#V"
+      else (
+        Array2.update(arr, i, j, "#V");
+        (* //----------- left door ------------- *)
+        if (element="#L") then (  
+          if (j=0)  then
+          (
+            Array2.update(arr, i, j, "#E");
+            "#E"
+          )
+          else (
+              val newresponse = escapablePath(arr, i, j-1, n, m);
+              Array2.update(arr, i, j, newresponse);
+              newresponse
 
+            )
+          )
+        (* //----- ------ right door ------------- *)
+        else if (element="#R") then (  
+          if (j=(m-1))  then
+          (
+            Array2.update(arr, i, j, "#E");
+            "#E"
+          )
+          else (
+              response = escapablePath(arr, i, j+1, n, m);
+              Array2.update(arr, i, j, response)
+            )
+          )
+       (* //------------ up door ------------- *)
+        else if (element="#U") then (  
+          if (i=0)  then
+          (
+            Array2.update(arr, i, j, "#E");
+            response = "#E"
+          )
+          else (
+              response = escapablePath(arr, i-1, j, n, m);
+              Array2.update(arr, i, j, response)
+            )
+          )
+          (* //------------ up door ------------- *)
+        else (  
+          if (i=n-1)  then
+          (
+            Array2.update(arr, i, j, "#E");
+            response = "#E"
+          )
+          else (
+              response = escapablePath(arr, i+1, j, n, m);
+              Array2.update(arr, i, j, response)
+            )
+          )
+      )
+      
+    in
+      response
+    end
+
+        (* if ((i+1)=n) then 
+          ( if ((j+1)=m) then 
+            "#V"
+          else
+            findEscapableRooms(arr, 0,j+1,n,m)
+          )
+        else
+          findEscapableRooms(arr,i+1,j,n,m) *)
 
 (**@@@@@@@@@@@@@@@@@@- FINAL FUNCTION-@@@@@@@@@@@@@@@@@@*)
 (* Takes a sigle parameter, a text called inputFile, and returns the number of non-escapable rooms*)
@@ -54,9 +125,11 @@ fun loop_rooms inputFile =
     val cleanGrid =  removeUseless(grid,m)
    (* val first  =  (fn (x::y) => x) grid   *)
     (* val first  = (fn(a::b) => a) ((fn (x::y) => y) grid) *)
+
+    val doubleArray = Array2.fromList cleanGrid
   in
      
-    cleanGrid
+  Array2.n doubleArray
   end;
 
 (* Useless code, only for testing reasons 
@@ -64,3 +137,40 @@ fun loop_rooms inputFile =
   loop_rooms "tests/maze1.txt"; 
 
 
+(* 
+  (* //----- ------ right door ------------- *)
+        else if (element="#R") then (  
+          if (j=(m-1))  then
+          (
+            Array2.update(arr, i, j, "#E");
+            response = "#E"
+          )
+          else (
+              response = escapablePath(arr, i, j+1, n, m);
+              Array2.update(arr, i, j, response)
+            )
+          )
+       (* //------------ up door ------------- *)
+        else if (element="#U") then (  
+          if (i=0)  then
+          (
+            Array2.update(arr, i, j, "#E");
+            response = "#E"
+          )
+          else (
+              response = escapablePath(arr, i-1, j, n, m);
+              Array2.update(arr, i, j, response)
+            )
+          )
+          (* //------------ up door ------------- *)
+        else (  
+          if (i=n-1)  then
+          (
+            Array2.update(arr, i, j, "#E");
+            response = "#E"
+          )
+          else (
+              response = escapablePath(arr, i+1, j, n, m);
+              Array2.update(arr, i, j, response)
+            )
+          ) *)
