@@ -56,8 +56,9 @@ fun updateElement (arr, i, j, value) =
 fun escapablePath (arr, i, j, n, m) = 
     let
       val element = Array2.sub (arr, i, j)
-      val response = updateElement(arr, i, j, #"V")
-      (* val hi = print ("["^Int.toString(i)^", "^Int.toString(j)^ "] of ["^Int.toString(n)^", "^Int.toString(m)^"]  had "^Char.toString(element)^", now has "^Char.toString(response)^"\n") *)
+      (* val response = updateElement(arr, i, j, #"V") *)
+      val response = if (element = #"E") then updateElement(arr, i, j, #"E") else updateElement(arr, i, j, #"V")
+      (* val hi = print ("----> ["^Int.toString(i)^", "^Int.toString(j)^ "] of ["^Int.toString(n)^", "^Int.toString(m)^"]  had "^Char.toString(element)^", now has "^Char.toString(response)^"\n") *)
 
       fun checkElement (#"E") = updateElement(arr, i, j, #"E")
       | checkElement (#"V") = updateElement(arr, i, j,  #"V")
@@ -65,13 +66,16 @@ fun escapablePath (arr, i, j, n, m) =
       | checkElement (#"R") = if (j=m) then updateElement(arr, i, j,  #"E") else escapablePath(arr, i, (j+1),n,m)
       | checkElement (#"U") = if (i=0) then updateElement(arr, i, j,  #"E") else escapablePath(arr, (i-1),j,n,m)
       | checkElement (#"D") = if (i=n) then updateElement(arr, i, j,  #"E") else escapablePath(arr, (i+1),j,n,m)   
+      | checkElement (_) = #"B"
+      
     in
-      checkElement(element)
+      updateElement (arr, i,j,checkElement(element))
       
     end
 
-fun nonEscapable (#"E") = 1
-| nonEscapable (_) = 0
+fun nonEscapable (#"V") = 1
+| nonEscapable (#"E") = 0
+| nonEscapable(_) = 0
 
 
 fun scanArray (arr, i, j, n, m, counter) = 
@@ -79,30 +83,14 @@ fun scanArray (arr, i, j, n, m, counter) =
     val currentElement = escapablePath(arr,i,j,n,m)
     val current = nonEscapable currentElement
     val newCounter = counter + current
+    (* val hi = print ("["^Int.toString(i)^", "^Int.toString(j)^ "] of ["^Int.toString(n)^", "^Int.toString(m)^"]  element: "^Char.toString(currentElement)^", counter: "^Int.toString(newCounter)^"\n")  *)
+
   in
-    if (i=n) andalso (j=m) then newCounter
-    else if (j<>m) then (scanArray(arr,i,(j+1),n,m,newCounter))
-    else if (i<>n) then (scanArray(arr,(i+1),0,n,m,newCounter))
+    if (j<m) then (scanArray(arr,i,(j+1),n,m,newCounter))
+    else if (i<n) then (scanArray(arr,(i+1),0,n,m,newCounter))
     else newCounter
   end
   
-  (* let
-    val counter = 0;
-    val i=0
-    val j=0
-    fun scanAux (a,b) = 
-      let
-        val escapable = escapablePath(arr,i,j,n,m)
-        fun checkEscapable (#"V") = (counter+1)
-        | checkEscapable (_) = counter
-
-        result = (checkEscapable escapable) + 
-      in 
-        checkEscapable escapable
-      end
-  in
-    counter
-  end *)
 
 (**@@@@@@@@@@@@@@@@@@- FINAL FUNCTION-@@@@@@@@@@@@@@@@@@*)
 (* Takes a sigle parameter, a text called inputFile, and returns the number of non-escapable rooms*)
@@ -120,12 +108,11 @@ fun loop_rooms inputFile =
     val doubleArray = Array2.fromList cleanGrid
     val response = scanArray (doubleArray, 0, 0, (n-1), (m-1),0)
   in
-    (n, m, grid,cleanGrid, response)
+    (* (n, m, grid,cleanGrid, response) *)
     (* (n, m, cleanGrid) *)
+  ( print (Int.toString(response)^"\n") )
 
   end;
 
 (* Useless code, only for testing reasons 
  To test the code just type "sml <loop_rooms.sml" on Terminal*)
-  loop_rooms "tests/fairmaze.in3"; 
-
