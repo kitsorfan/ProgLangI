@@ -17,6 +17,9 @@ fun parse file =
 
       	val inStream = TextIO.openIn file     (* open the file and "put it" in inStream (note: in ML we do into variables, we have no variables) *)
 
+        fun readInt input = 
+        Option.valOf (TextIO.scanStream (Int.scan StringCvt.DEC) input)
+
         fun readLines acc =                   (* read *)
           let
             val newLineOption = TextIO.inputLine inStream
@@ -26,10 +29,10 @@ fun parse file =
             else  (readLines ( explode  (valOf newLineOption):: acc ))
         end;
 
+        val N = readInt inStream
+        val M = readInt inStream
         val grid = readLines []   (* call function readLines with empty list as parameter*)
         val grid2 = tl grid       (* get rid of the first subarray*)
-        val M = length (hd grid) - 2 (*M is*)
-        val N = length grid - 1
     in
    	    (N,M,grid2)
 end;
@@ -43,7 +46,7 @@ fun removeUseless (nil,a) = nil
 fun updateElement (arr, i, j, value) = 
   let 
     val a = Array2.update (arr, i, j, value)
-    val _ = print ("Who you gonna call "^Int.toString(i)^" "^Int.toString(j)^" "^Char.toString(value)^"\n")
+    (* val _ = print ("Who you gonna call "^Int.toString(i)^" "^Int.toString(j)^" "^Char.toString(value)^"\n") *)
     
   in 
     value
@@ -54,7 +57,7 @@ fun escapablePath (arr, i, j, n, m) =
     let
       val element = Array2.sub (arr, i, j)
       val response = updateElement(arr, i, j, #"V")
-      val hi = print ("["^Int.toString(i)^", "^Int.toString(j)^ "] of ["^Int.toString(n)^", "^Int.toString(m)^"]  had "^Char.toString(element)^", now has "^Char.toString(response)^"\n")
+      (* val hi = print ("["^Int.toString(i)^", "^Int.toString(j)^ "] of ["^Int.toString(n)^", "^Int.toString(m)^"]  had "^Char.toString(element)^", now has "^Char.toString(response)^"\n") *)
 
       fun checkElement (#"E") = updateElement(arr, i, j, #"E")
       | checkElement (#"V") = updateElement(arr, i, j,  #"V")
@@ -67,7 +70,39 @@ fun escapablePath (arr, i, j, n, m) =
       
     end
 
-       
+fun nonEscapable (#"E") = 1
+| nonEscapable (_) = 0
+
+
+fun scanArray (arr, i, j, n, m, counter) = 
+  let
+    val currentElement = escapablePath(arr,i,j,n,m)
+    val current = nonEscapable currentElement
+    val newCounter = counter + current
+  in
+    if (i=n) andalso (j=m) then newCounter
+    else if (j<>m) then (scanArray(arr,i,(j+1),n,m,newCounter))
+    else if (i<>n) then (scanArray(arr,(i+1),0,n,m,newCounter))
+    else newCounter
+  end
+  
+  (* let
+    val counter = 0;
+    val i=0
+    val j=0
+    fun scanAux (a,b) = 
+      let
+        val escapable = escapablePath(arr,i,j,n,m)
+        fun checkEscapable (#"V") = (counter+1)
+        | checkEscapable (_) = counter
+
+        result = (checkEscapable escapable) + 
+      in 
+        checkEscapable escapable
+      end
+  in
+    counter
+  end *)
 
 (**@@@@@@@@@@@@@@@@@@- FINAL FUNCTION-@@@@@@@@@@@@@@@@@@*)
 (* Takes a sigle parameter, a text called inputFile, and returns the number of non-escapable rooms*)
@@ -83,12 +118,14 @@ fun loop_rooms inputFile =
     (* val first  = (fn(a::b) => a) ((fn (x::y) => y) grid) *)
 
     val doubleArray = Array2.fromList cleanGrid
-    val response = escapablePath (doubleArray, 1, 1, (n-1), (m-1))
+    val response = scanArray (doubleArray, 0, 0, (n-1), (m-1),0)
   in
-    response
+    (n, m, grid,cleanGrid, response)
+    (* (n, m, cleanGrid) *)
+
   end;
 
 (* Useless code, only for testing reasons 
  To test the code just type "sml <loop_rooms.sml" on Terminal*)
-  loop_rooms "tests/maze1.txt"; 
+  loop_rooms "tests/fairmaze.in3"; 
 
