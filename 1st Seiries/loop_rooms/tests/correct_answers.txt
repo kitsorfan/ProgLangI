@@ -9,7 +9,7 @@ maze8.txt 51
 
 
 fairmaze.in1 -> 2
-faremaze.in2 -> 4
-faremaze.in3 -> 20
+fairmaze.in2 -> 4
+fairmaze.in3 -> 20
 fairmaze.in11 -> 15303
 fairmaze.in17 -> 418003
