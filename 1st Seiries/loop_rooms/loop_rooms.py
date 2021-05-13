@@ -5,20 +5,20 @@ import sys
 def check_next(door, escapes,i,j,N,M):
     #left door
     if (door=="L"):
-        if (j==0): return 1
-        else: return escapes[i][j-1]
+        if (j==0): return (i,j,1)
+        else: return (i,(j-1),escapes[i][j-1])
     #right door
     elif (door=="R"):
-        if (j==(M-1)): return 1
-        else: return escapes[i][j+1]
+        if (j==(M-1)): return (i,j,1)
+        else: return (i,(j+1),escapes[i][j+1])
     #right door
     elif (door=="U"):
-        if (i==0): return 1
-        else: return escapes[i-1][j]
+        if (i==0): return (i,j,1)
+        else: return ((i-1),j,escapes[i-1][j])
     #down door
     else:
-        if (i==(N-1)): return 1
-        else: return escapes[i+1][j]
+        if (i==(N-1)): return (i,j,1)
+        else: return ((i+1),j,escapes[i+1][j])
 
 def next_indexes(i,j,door):
     #left door
@@ -39,32 +39,31 @@ def next_indexes(i,j,door):
 
 def paint_path(doors,escapes,paint,i,j,end_i,end_j):
     escapes[i][j]=paint
-    print("@@@@@@@@@@@@@@@@@@@@@@@@@@")
-    print("  Paint={}, Start=[{}][{}], End=[{}][{}]".format(paint,i,j,end_i,end_j),end=" | ")
+    # print("@@@@@@@@@@@@@@@@@@@@@@@@@@")
+    # print("  Paint={}, Start=[{}][{}], End=[{}][{}]".format(paint,i,j,end_i,end_j),end=" | ")
 
 
-    while((i!=end_i) and(j!=end_j)):
+    while((i!=end_i) or(j!=end_j)):
         
-        print("[{}][{}]".format(i,j), end=" -> ")
+        # print("[{}][{}]".format(i,j), end=" -> ")
 
         door = doors[i][j]
         (i,j)=next_indexes(i,j,door)
         escapes[i][j]=paint
         
-    print()
+    # print()
     
 def check_path(doors, escapes, i, j, N, M):
     while True:
         door = doors[i][j]
         
-        print("I am door[{}][{}]={} and I am {}".format(i,j,door,escapes[i][j]))
+        # print("I am door[{}][{}]={} and I am {}".format(i,j,door,escapes[i][j]))
         
         if (escapes[i][j]!=1): escapes[i][j]=2
-        next_door = check_next(door,escapes,i,j,N,M)
+        (i,j,next_door) = check_next(door,escapes,i,j,N,M)
         
-        print("My next is:",next_door)
-        
-        (i,j)=next_indexes(i,j,door)
+        # print("My next is:",next_door,"[{}][{}]".format(i,j))
+      
         if (next_door!=0): break #emulate do-while
         
 
@@ -94,7 +93,7 @@ if __name__ == "__main__":
                 (end_i, end_j, paint)=check_path(maze_doors,maze_escapes,i,j,N,M)
                 paint_path(maze_doors, maze_escapes,paint,i,j,end_i,end_j)
             if (maze_escapes[i][j]==1): escapable_rooms+=1
-    for record in maze_escapes:
-        print(record)
+    #for record in maze_escapes:
+        # print(record)
     non_escapable_rooms=N*M-escapable_rooms
     print(non_escapable_rooms)
