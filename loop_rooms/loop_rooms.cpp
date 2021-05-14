@@ -20,9 +20,12 @@ We read the given file (from arguments) and fill that maze..
 
 Then we create a N x M dynamic array, called maze_escapes, with initial values '0' to each cell.
 
+We run a DFS to find escapable rooms. If we find a visited one then the whole
+path is "else", else is "good".
 We use an auilary recursive function that follows the path of every cell.
 We check whether the next room is already "visited", "bad" or "good".
 We mark "visited" rooms with 2, "bad" with 3, "good" with 1.
+Bad or visited are actually the same (see version of ML or Python).
 --------------------------------------------------------------------------------
 */
 
@@ -116,14 +119,14 @@ int main(int argc, char** argv) { //arg = number of arguments, argv pointer arra
   maze_escapes = new int *[N];
 
   for (int i=0; i<N; i++){
-    maze_doors[i] = new char [M];
-    maze_escapes[i] = new int [M];
+    maze_doors[i] = new char [M]; //initial array
+    maze_escapes[i] = new int [M];//array describing escapability of each doors 
   }
 
   for (int i=0; i<N; i++){  //reading all rooms
     for (int j=0; j<M; j++){
       File>>maze_doors[i][j];
-      maze_escapes[i][j]=0;
+      maze_escapes[i][j]=0; //initializing to 0, means door has unknown escapability
     }
   }
 
