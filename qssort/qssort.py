@@ -69,24 +69,32 @@ class state:
     def __str__(self):
         #return "Queu: {} List: {}".format(self.ourQueu,self.ourList)
         listToStr = ''.join(map(str, list(self.prev)))
-        return listToStr
+        if (listToStr==""): return "empty"
+        else: return listToStr
+        # else: return "{}. Queu: {} | List: {} | Moves: {}".format(len(self.prev),self.ourQueu,self.ourList,self.prev) # listToStr
 
     def success(self, finalQueu):
         return (list(self.ourQueu)==finalQueu)
 
     def __eq__(self,other):
-        return (isinstance(other,state) and (self.ourList==other.ourList) and (self.ourQueu)==(other.ourQueu))
+        return (isinstance(other,state) and (self.ourQueu)==(other.ourQueu) and (self.ourList)==(other.ourList))
 
     def __hash__(self):
-        return hash(frozenset(self.ourList))
+        y=list(enumerate(self.ourQueu))+list((self.ourList))
+        return hash(frozenset(y))
+        
 
 def solve(initState,finalState): #bfs
     Q=deque([initState])
     seen= set([initState])
     while Q:
         s=Q.popleft()
+        # print(s)
+        if s.success(finalState): 
+            return s
         for t in s.accessible():
             if t.success(finalState):
+                seen.add(t)
                 return t
             if t not in seen:
                 seen.add(t)
