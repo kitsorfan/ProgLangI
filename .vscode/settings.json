@@ -3,5 +3,7 @@
         "iostream": "cpp",
         "vector": "cpp",
         "algorithm": "cpp"
-    }
+    },
+    "prolog.executablePath": "C:\\Program Files\\swipl\\bin\\swipl.exe",
+    "prolog.linter.enableMsgInOutput": true
 }
