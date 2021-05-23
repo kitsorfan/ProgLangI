@@ -77,10 +77,10 @@ class state:
         return (list(self.ourQueu)==finalQueu)
 
     def __eq__(self,other):
-        return (isinstance(other,state) and (self.ourQueu)==(other.ourQueu) and (self.ourList)==(other.ourList))
+        return (isinstance(other,state) and (self.ourQueu)==(other.ourQueu) ) #maybe remove lasts: and (self.ourList)==(other.ourList)
 
     def __hash__(self):
-        y=list(enumerate(self.ourQueu))+list((self.ourList))
+        y=list(enumerate(self.ourQueu))+list((self.ourList))#+list((self.ourList)
         return hash(frozenset(y))
         
 
