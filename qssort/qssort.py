@@ -45,30 +45,35 @@ class state:
 
             Qmove=self.ourQueu.popleft()
             self.ourList.appendleft(Qmove)
-            self.prev.append("Q")
+            # self.prev.append("Q")
+            self.prev=self.prev+"Q"
             yield state(self.ourQueu, self.ourList,self.prev)
-            
+
             Smove=initial.ourList.popleft()
             initial.ourQueu.append(Smove)
-            initial.prev.append("S")
-            yield state(initial.ourQueu, initial.ourList,initial.prev)
+            # initial.prev.append("S")
+            initial.prev=initial.prev+"S"
+            yield state(initial.ourQueu, initial.ourList, initial.prev)
 
         elif(len(self.ourQueu)!=0):
             Qmove=self.ourQueu.popleft()
             self.ourList.appendleft(Qmove)
-            self.prev.append("Q")
+            # self.prev.append("Q")
+            self.prev=self.prev+"Q"
             yield state(self.ourQueu, self.ourList,self.prev)
 
         else:
             Smove=self.ourList.popleft()
             self.ourQueu.append(Smove)
-            self.prev.append("S")
+            # self.prev.append("S")
+            self.prev=self.prev+"S"
             yield state(self.ourQueu, self.ourList,self.prev)
             
 
     def __str__(self):
-        #return "Queu: {} List: {}".format(self.ourQueu,self.ourList)
-        listToStr = ''.join(map(str, list(self.prev)))
+        ##return "Queu: {} List: {}".format(self.ourQueu,self.ourList)
+        # listToStr = ''.join(map(str, list(self.prev)))
+        listToStr=self.prev
         if (listToStr==""): return "empty"
         else: return listToStr
         # else: return "{}. Queu: {} | List: {} | Moves: {}".format(len(self.prev),self.ourQueu,self.ourList,self.prev) # listToStr
@@ -77,11 +82,14 @@ class state:
         return (list(self.ourQueu)==finalQueu)
 
     def __eq__(self,other):
-        return (isinstance(other,state) and (self.ourQueu)==(other.ourQueu) ) #maybe remove lasts: and (self.ourList)==(other.ourList)
+        return (self is other)
+        # return (isinstance(other,state) and (self.ourQueu) is (other.ourQueu) and (self.ourList) is (other.ourList)) #maybe remove lasts: 
+        # return (isinstance(other,state) and (self.prev)==(other.prev)) #maybe remove lasts: 
 
     def __hash__(self):
-        y=list(enumerate(self.ourQueu))+list((self.ourList))#+list((self.ourList)
-        return hash(frozenset(y))
+        # y=list(enumerate(self.ourQueu))+list((self.ourList))#+list((self.ourList)
+        # y=list(enumerate(self.prev))
+        return hash(self.prev)
         
 
 def solve(initState,finalState): #bfs
@@ -107,7 +115,7 @@ if __name__ == "__main__":
         ourQueu = deque(map(int, inputFile.readline().split()))
         finalQueu=list(ourQueu)
         finalQueu.sort()
-        prev=deque()
+        prev=""
         
         init = state(ourQueu,ourStack,prev)
         print(solve(init,finalQueu))
