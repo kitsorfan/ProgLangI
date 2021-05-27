@@ -56,46 +56,39 @@ removePrefix([],[]).
 removePrefix([[_,Index]|More1],[Index|More2]):-
     removePrefix(More1,More2).
 
+
+giveMin(A,B,C):-
+    A<B,
+    C=A.
+giveMin(_,B,C):-
+    C=B.
+
+giveMax(A,B,C):-
+    A>B,
+    C=A.
+giveMax(_,B,C):-
+    C=B.
+
 % *@@@@@@@@@@@@@@@@@@- Find max Dif -@@@@@@@@@@@@@@@@@@*
 
 findMaxDif([],_,_).
 findMaxDif([A|Rest],Min,MaxDif):-
-    write('Min is '),
+    write('Current '),
+    write(A),
+    write(' | 1. Min is '),
     write(Min),
     write(' and MaxDif is '),
     writeln(MaxDif),
-    A<Min,
-    NewMin = A,
+    giveMin(A,Min,NewMin),
     Dif is (A-Min),
-    Dif>MaxDif,
-    NewMaxDif = Dif,
-    findMaxDif(Rest,NewMin,NewMaxDif).
-findMaxDif([A|Rest],Min,MaxDif):-
-    A<Min,
-    NewMin = A,
-    Dif is (A-Min),
-    Dif=<MaxDif,
-    NewMaxDif = MaxDif,
-    findMaxDif(Rest,NewMin,NewMaxDif).
-findMaxDif([A|Rest],Min,MaxDif):-
-    A>=Min,
-    NewMin = Min,
-    Dif is (A-Min),
-    Dif>MaxDif,
-    NewMaxDif = Dif,
-    findMaxDif(Rest,NewMin,NewMaxDif).
-findMaxDif([A|Rest],Min,MaxDif):-
-    A>=Min,
-    NewMin = Min,
-    Dif is (A-Min),
-    Dif=<MaxDif,
-    NewMaxDif = MaxDif,
-    findMaxDif(Rest,NewMin,NewMaxDif).
+    giveMax(MaxDif,Dif,NewMaxDif),
+    writeln(NewMaxDif),
+    findMaxDif(Rest,NewMin,NewMaxDif),!.
 
 
 % @@@@@@@@@@@@@@@@@@@@@@@@- MAIN FUNCTION -@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 longest(File, Answer) :-
-    read_input(File, Days, Hospitals, Discharges),
+    read_input(File, _, Hospitals, Discharges),
     minusHospitals(Hospitals,Discharges,MinusDischarges),
     indexAndPrefix(1,0,MinusDischarges,IndexedDischarges),
     addZero(IndexedDischarges,ZeroIndexedDischarges),
