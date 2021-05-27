@@ -26,6 +26,7 @@ Steps:
 Example: 
 
 Suppose we have 3 hospitals and 11 days. The given array is:
+11 3
 42 -10	8	1	11	-6	-12	16	-15	-11	13
 
 After:
