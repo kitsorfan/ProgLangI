@@ -71,19 +71,13 @@ giveMax(_,B,C):-
 
 % *@@@@@@@@@@@@@@@@@@- Find max Dif -@@@@@@@@@@@@@@@@@@*
 
-findMaxDif([],_,_).
-findMaxDif([A|Rest],Min,MaxDif):-
-    write('Current '),
-    write(A),
-    write(' | 1. Min is '),
-    write(Min),
-    write(' and MaxDif is '),
-    writeln(MaxDif),
+findMaxDif([],_,_,[]).
+findMaxDif([A|Rest],Min,MaxDif,[X|Rest2]):-
     giveMin(A,Min,NewMin),
     Dif is (A-Min),
     giveMax(MaxDif,Dif,NewMaxDif),
-    writeln(NewMaxDif),
-    findMaxDif(Rest,NewMin,NewMaxDif),!.
+    X=NewMaxDif,
+    findMaxDif(Rest,NewMin,NewMaxDif,Rest2),!.
 
 
 % @@@@@@@@@@@@@@@@@@@@@@@@- MAIN FUNCTION -@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
@@ -94,13 +88,9 @@ longest(File, Answer) :-
     addZero(IndexedDischarges,ZeroIndexedDischarges),
     mySort(ZeroIndexedDischarges,SortedDischarges),
     removePrefix(SortedDischarges,SortedIndexes),
-    writeln(SortedIndexes),
     SortedIndexes = [First|_],
-    writeln(First),
-    Answer is 0,
-    findMaxDif(SortedIndexes,First,Answer),
-    writeln('Answer is '),
-    fail.
+    findMaxDif(SortedIndexes,First,0,Results),
+    last(Results,Answer),!.
 
 
 % longest('longest.in1', Answer), writeln(Answer), fail.
