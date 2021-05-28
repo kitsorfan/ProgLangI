@@ -56,8 +56,10 @@ class state:                                    # we create a class to create ob
 
     def accessible(self):   # create accessible states from our current state
         # S & Q allowed
-        if (len(self.ourQueu)!=0) and (len(self.ourStack)!=0):   # if both queu and stack are not empty the S and Q alloweds
-            initial=copy.deepcopy(self)                          # create a copy of the state (we will make two moves  so we need a copy)
+        lenQueue=len(self.ourQueu)
+        lenStack=len(self.ourStack)
+        if (lenQueue!=0) and (lenStack!=0):   # if both queu and stack are not empty the S and Q alloweds
+            initial=copy.deepcopy(self)             # create a copy of the state (we will make two moves  so we need a copy)
 
             # Q MOVE
             Qmove=self.ourQueu.popleft()            # pop an element from Queu (left side)
@@ -72,7 +74,7 @@ class state:                                    # we create a class to create ob
             yield state(initial.ourQueu, initial.ourStack, initial.prev) # yield the state
 
         # only Q allowed
-        elif(len(self.ourQueu)!=0):                 # Only Q move is allowed (Stack is empty). We do not need to create a copy
+        elif(lenQueue!=0):                          # Only Q move is allowed (Stack is empty). We do not need to create a copy
             Qmove=self.ourQueu.popleft()            # pop an element from Queu (left side)
             self.ourStack.appendleft(Qmove)         # push an element to Stack (left side)
             self.prev=self.prev+"Q"                 # add Q to our prev string
