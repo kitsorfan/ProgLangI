@@ -87,9 +87,10 @@ class state:                                    # we create a class to create ob
             
 
     def __str__(self):      # print the state
-        listToStr=self.prev # take the string (perhaps useless)
-        if (listToStr==""): return "empty"  # if empty string 
-        else: return listToStr
+        # listToStr=self.prev # take the string (perhaps useless)
+        # if (listToStr==""): return "empty"  # if empty string 
+        # else: 
+        return self.prev
 
 
 
@@ -98,12 +99,13 @@ class state:                                    # we create a class to create ob
 
 
     def __eq__(self,other): # compare two statess to find if they are the same
-        return (isinstance(other,state) and (self.ourQueu)==(other.ourQueu) and (self.ourStack)==(other.ourStack))
+          return (self is other) 
 
 
     def __hash__(self): # hashing the object
-        y=list(enumerate(self.ourQueu))+list((self.ourStack))#+list((self.ourList)
-        return hash(frozenset(y))  # we hash the prev string (is always different for every state)
+        return (hash(self.prev))
+        # y=list(enumerate(self.ourQueu))+list((self.ourStack))#+list((self.ourList)
+        # return hash(frozenset(y))  # we hash the prev string (is always different for every state)
         
 
 # @@@@@@@@@@@@@@@@@@@@@@@@- SOLVE FUNCTION -@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
@@ -115,10 +117,10 @@ class state:                                    # we create a class to create ob
 def solve(initState,finalState): #BFS 
     Q=deque([initState])  # queue to add new state to traverse
     seen= set([initState]) # set to add the visited nodes
+    # if s.success(finalState): # if is the final the return the final state (it contains the prev string = the path to reach it)
+    #     return s              # we need that if the initial state == final state (already sorted stack)
     while Q:                # while Q is not empty
         s=Q.popleft()       # pop a state from it
-        if s.success(finalState): # if is the final the return the final state (it contains the prev string = the path to reach it)
-            return s              # we need that if the initial state == final state (already sorted stack)
         for t in s.accessible():  # add the two accessible states to our queu (if they are not already visited)
             if t.success(finalState):
                 seen.add(t)
@@ -136,10 +138,12 @@ if __name__ == "__main__":
         ourQueu = deque(map(int, inputFile.readline().split()))      # fill the queue
         finalQueu=list(ourQueu)                                      # copy the stack to a new list
         finalQueu.sort()                                             # sort that list
-        prev=""                                                      # create the previous strings (empty)
-        
-        init = state(ourQueu,ourStack,prev)                          # create initial state 
-        print(solve(init,finalQueu))                                 # run the BFS and print the result
+        if (finalQueu==list(ourQueu)): 
+            print("empty")
+        else:
+            prev=""                                                      # create the previous strings (empty)
+            init = state(ourQueu,ourStack,prev)                          # create initial state 
+            print(solve(init,finalQueu))                                 # run the BFS and print the result
 
             
 
