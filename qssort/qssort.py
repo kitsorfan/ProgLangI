@@ -97,8 +97,8 @@ class state:                                    # we create a class to create ob
         return (list(self.ourQueu)==finalQueu)
 
 
-    def __eq__(self,other): # compare two stated to find if they are the same
-        return (self is other)  # object comparison
+    def __eq__(self,other): # compare two statess to find if they are the same
+        return (isinstance(other,state) and (self.ourQueu)==(other.ourQueu) and (self.ourList)==(other.ourList))
 
 
     def __hash__(self): # hashing the object
