@@ -98,11 +98,12 @@ class state:                                    # we create a class to create ob
 
 
     def __eq__(self,other): # compare two statess to find if they are the same
-        return (isinstance(other,state) and (self.ourQueu)==(other.ourQueu) and (self.ourList)==(other.ourList))
+        return (isinstance(other,state) and (self.ourQueu)==(other.ourQueu) and (self.ourStack)==(other.ourStack))
 
 
     def __hash__(self): # hashing the object
-        return hash(self.prev)  # we hash the prev string (is always different for every state)
+        y=list(enumerate(self.ourQueu))+list((self.ourStack))#+list((self.ourList)
+        return hash(frozenset(y))  # we hash the prev string (is always different for every state)
         
 
 # @@@@@@@@@@@@@@@@@@@@@@@@- SOLVE FUNCTION -@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
