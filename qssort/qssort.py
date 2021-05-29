@@ -40,7 +40,7 @@
 
 from collections import deque           # we will use deque, as it has better average complexities
 import sys                              # to take the call parameters
-import copy                             # for deep copy
+
 
 
 
@@ -53,36 +53,50 @@ class state:                                    # we create a class to create ob
         self.ourQueu = ourQueu
         self.ourStack = ourStack
 
+    # def Qmove(self):
+    #     newQ = self.ourQueu[1:]
+    #     newS = self.ourStack[:]
+    #     newS.append(self.ourQueu[0])
+    # def Smove(self):
+    #     newQ = self.ourQueu[:]
+    #     newS = self.ourStack[:-1]
+    #     newQ.append(self.ourStack[-1])
 
     def accessible(self):   # create accessible states from our current state
         # S & Q allowed
         lenQueue=len(self.ourQueu)
         lenStack=len(self.ourStack)
         if (lenQueue!=0) and (lenStack!=0):   # if both queu and stack are not empty the S and Q alloweds
-            initial=copy.deepcopy(self)             # create a copy of the state (we will make two moves  so we need a copy)
+            #initial=copy.deepcopy(self)             # create a copy of the state (we will make two moves  so we need a copy)
+            initialStack=self.ourStack[:]
+            initialQueue=self.ourQueu[:]
+            initialPrev=self.prev[:]
+            # print(initialQueue,initialStack,initialPrev)
 
             # Q MOVE
-            Qmove=self.ourQueu.popleft()            # pop an element from Queu (left side)
-            self.ourStack.appendleft(Qmove)         # push an element to stack (left side)
+            Qmove=self.ourQueu.pop(0)            # pop an element from Queu (left side)
+            self.ourStack.append(Qmove)         # push an element to stack (left side)
             self.prev=self.prev+"Q"                 # add Q to our prev string
             yield state(self.ourQueu, self.ourStack,self.prev) # yield the state
 
+            # print(initialQueue,initialStack,initialPrev)
+            # time.sleep(0.01)
             # S Move
-            Smove=initial.ourStack.popleft()        # pop an element from Stack
-            initial.ourQueu.append(Smove)           # push an element to Queue (left side)
-            initial.prev=initial.prev+"S"           # add S to our prev string (right side)
-            yield state(initial.ourQueu, initial.ourStack, initial.prev) # yield the state
+            Smove=initialStack.pop()        # pop an element from Stack
+            initialQueue.append(Smove)           # push an element to Queue (left side)
+            initialPrev=initialPrev+"S"           # add S to our prev string (right side)
+            yield state(initialQueue, initialStack, initialPrev) # yield the state
 
         # only Q allowed
         elif(lenQueue!=0):                          # Only Q move is allowed (Stack is empty). We do not need to create a copy
-            Qmove=self.ourQueu.popleft()            # pop an element from Queu (left side)
-            self.ourStack.appendleft(Qmove)         # push an element to Stack (left side)
+            Qmove=self.ourQueu.pop(0)            # pop an element from Queu (left side)
+            self.ourStack.append(Qmove)         # push an element to Stack (left side)
             self.prev=self.prev+"Q"                 # add Q to our prev string
             yield state(self.ourQueu, self.ourStack,self.prev) # yield the state
 
         # only S allowed
         else:
-            Smove=self.ourStack.popleft()           # Only S move is allowed (Queue is empty). We do not need to create a copy
+            Smove=self.ourStack.pop()           # Only S move is allowed (Queue is empty). We do not need to create a copy
             self.ourQueu.append(Smove)              # pop an element from Stack (left side)
             self.prev=self.prev+"S"                 # push an element to Queu (right side)
             yield state(self.ourQueu, self.ourStack,self.prev) # yield the state
@@ -97,17 +111,32 @@ class state:                                    # we create a class to create ob
 
 
     def success(self, finalQueu):      # success condition, if stack == sorted stack
+        
         return (list(self.ourQueu)==finalQueu)
 
 
     def __eq__(self,other): # compare two statess to find if they are the same
-          return (self is other) 
+        # x=tuple(self.ourStack)
+        # y=tuple(self.ourQueu)
+        return (self.prev is other.prev) 
 
 
     def __hash__(self): # hashing the object
-        return (hash(self.prev))
-        # y=list(enumerate(self.ourQueu))+list((self.ourStack))#+list((self.ourList)
-        # return hash(frozenset(y))  # we hash the prev string (is always different for every state)
+        # y=list(zip(self.ourQueu, self.ourStack))
+        # x="".join([str(x) for x in self.ourQueu])
+        # y="".join([str(x) for x in self.ourStack])
+        # return (hash(x+y))
+        x=tuple(self.ourQueu)
+        y=tuple(self.ourStack)
+        # return(hash(x))
+        # y=list(enumerate(self.ourQueu))#+list((self.ourList)
+        # y=list((self.ourQueu))#+list((self.ourList)
+        return(hash((x,y)))
+        # x=''.join(self.ourQueu)
+        # # # print(x)
+        
+        # return hash(x)  # we hash the prev string (is always different for every state)
+        # return hash(frozenset(y))
         
 
 # @@@@@@@@@@@@@@@@@@@@@@@@- SOLVE FUNCTION -@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
@@ -118,7 +147,7 @@ class state:                                    # we create a class to create ob
 
 def solve(initState,finalState): #BFS 
     Q=deque([initState])  # queue to add new state to traverse
-    seen= set([initState]) # set to add the visited nodes
+    seen=set([initState]) # set to add the visited nodes
     # if s.success(finalState): # if is the final the return the final state (it contains the prev string = the path to reach it)
     #     return s              # we need that if the initial state == final state (already sorted stack)
     while Q:                # while Q is not empty
@@ -126,6 +155,7 @@ def solve(initState,finalState): #BFS
         for t in s.accessible():  # add the two accessible states to our queu (if they are not already visited)
             if t.success(finalState):
                 seen.add(t)
+                print(len(seen))
                 return t        # return it, because of success (the main source of success)
             if t not in seen:   # if not success, add to the Seen set, and to the Q queue
                 seen.add(t)
@@ -136,11 +166,16 @@ def solve(initState,finalState): #BFS
 if __name__ == "__main__":
     with open(sys.argv[1], "rt") as inputFile:                       # take call parameters and open the file 
         N = int(inputFile.readline())                                # read N
-        ourStack=deque()                                             # create empty stack
-        ourQueu = deque(map(int, inputFile.readline().split()))      # fill the queue
-        finalQueu=list(ourQueu)                                      # copy the stack to a new list
+        ourStack=[]                                             # create empty stack
+        ourQueu = list(map(int, inputFile.readline().split()))      # fill the queue
+        finalQueu=ourQueu[:]                                     # copy the stack to a new list
         finalQueu.sort()                                             # sort that list
-        if (finalQueu==list(ourQueu)): 
+        # finalQueu="".join([str(x) for x in finalQueu])
+        # ourQueu = "".join([str(x) for x in inputList])
+        # print(ourQueu)
+        # print(finalQueu)
+    
+        if (finalQueu==ourQueu): 
             print("empty")
         else:
             prev=""                                                      # create the previous strings (empty)
