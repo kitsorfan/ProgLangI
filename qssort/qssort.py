@@ -53,14 +53,6 @@ class state:                                    # we create a class to create ob
         self.ourQueu = ourQueu
         self.ourStack = ourStack
 
-    # def Qmove(self):
-    #     newQ = self.ourQueu[1:]
-    #     newS = self.ourStack[:]
-    #     newS.append(self.ourQueu[0])
-    # def Smove(self):
-    #     newQ = self.ourQueu[:]
-    #     newS = self.ourStack[:-1]
-    #     newQ.append(self.ourStack[-1])
 
     def accessible(self):   # create accessible states from our current state
         # S & Q allowed
@@ -112,13 +104,13 @@ class state:                                    # we create a class to create ob
 
     def success(self, finalQueu):      # success condition, if stack == sorted stack
         
-        return (list(self.ourQueu)==finalQueu)
+        return (self.ourQueu==finalQueu)
 
 
     def __eq__(self,other): # compare two statess to find if they are the same
         # x=tuple(self.ourStack)
         # y=tuple(self.ourQueu)
-        return (self.prev is other.prev) 
+        return (self is other) 
 
 
     def __hash__(self): # hashing the object
@@ -147,19 +139,19 @@ class state:                                    # we create a class to create ob
 
 def solve(initState,finalState): #BFS 
     Q=deque([initState])  # queue to add new state to traverse
-    seen=set([initState]) # set to add the visited nodes
+    seen={init:None} # set to add the visited nodes
     # if s.success(finalState): # if is the final the return the final state (it contains the prev string = the path to reach it)
     #     return s              # we need that if the initial state == final state (already sorted stack)
     while Q:                # while Q is not empty
         s=Q.popleft()       # pop a state from it
         for t in s.accessible():  # add the two accessible states to our queu (if they are not already visited)
             if t.success(finalState):
-                seen.add(t)
+                # seen.add(t)
                 print(len(seen))
                 return t        # return it, because of success (the main source of success)
             if t not in seen:   # if not success, add to the Seen set, and to the Q queue
-                seen.add(t)
                 Q.append(t)
+                seen[t]=s
 
 # @@@@@@@@@@@@@@@@@@@@@@@@- MAIN FUNCTION -@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
