@@ -78,15 +78,6 @@ readLine(Stream, L) :-
 
 
 
-findMaxDif([],_,_,[]).
-findMaxDif([A|Rest],Min,MaxDif,[X|Rest2]):-
-    giveMin(A,Min,NewMin),
-    Dif is (A-Min),
-    giveMax(MaxDif,Dif,NewMaxDif),
-    X=NewMaxDif,
-    findMaxDif(Rest,NewMin,NewMaxDif,Rest2),!.
-
-qmove([[],_,[],_]).
 qmove(Queue,Stack,Prev,NewQueue,NewStack,NewPrev):-
     Queue=[Head|_],
     select(Head,Queue,NewQueue),
@@ -94,7 +85,7 @@ qmove(Queue,Stack,Prev,NewQueue,NewStack,NewPrev):-
     NewStack=[New],
     atom_concat(Prev, "Q", NewPrev).
 
-smove([[],_,[],_]).
+
 smove(Queue,Stack,Prev,NewQueue,NewStack,NewPrev):-
     last(Stack,X),
     select(X,Stack,NewStack),
@@ -107,14 +98,128 @@ success(Queue,FinalQueue):-
     Queue=FinalQueue.
 
 
+solution([Move|_],FinalQueue,Moves):-
+    Move=[Queue,_,Prev],
+    success(Queue,FinalQueue),
+    write("Success "),
+    write(Queue),
+    write(" and prev "),
+    writeln(Prev),
+    Moves=Prev,!.
+
+solution([Move|Rest],FinalQueue,_):-
+    Move=[Queue,Stack,Prev],
+    write("Dual Move: "),
+    writeln(Move),
+    not(Stack = []),
+    not(Queue = []),
+    % length(Stack, LenStack),
+    % length(Queue, LenQueue),
+    % write(LenStack),
+    write(" | "),
+    % writeln(LenQueue),
+    % LenStack =\= 0,
+    % LenQueue =\= 0,
+    qmove(Queue,Stack,Prev,NewQueu1,NewStack1,NewPrev1),
+    smove(Queue,Stack,Prev,NewQueu2,NewStack2,NewPrev2),
+    Move1=[NewQueu1,NewStack1,NewPrev1],
+    write("      where qmove: "),
+    writeln(Move1),
+    Move2=[NewQueu2,NewStack2,NewPrev2],
+    write("      where smove: "),
+    writeln(Move2),
+    append(Rest,Move1,TempRest),
+    append(TempRest,Move2,NewRest),
+    solution(NewRest,FinalQueue,_).
+
+solution([Move|Rest],FinalQueue,_):-
+    Move=[Queue,Stack,Prev],
+    write("Q Solution ("),
+    write(Queue),
+    write(","),
+    write(Stack),
+    write(") and prev: "),
+    writeln(Prev),
+    not(Queue = []),
+    qmove(Queue,Stack,Prev,NewQueu,NewStack,NewPrev),
+    NewMove=[NewQueu,NewStack,NewPrev],
+    append(Rest,NewMove,NewRest),
+    solution(NewRest,FinalQueue,_).
+
+
+solution([Move|Rest],FinalQueue,_):-
+    Move=[Queue,Stack,Prev],
+    write("S Solution ("),
+    write(Queue),
+    write(","),
+    write(Stack),
+    write(") and prev: "),
+    writeln(Prev),
+    smove(Queue,Stack,Prev,NewQueu,NewStack,NewPrev),
+    NewMove=[NewQueu,NewStack,NewPrev],
+    append(Rest,NewMove,NewRest),
+    solution(NewRest,FinalQueue,_).
+
+
+
+
+% solution(Queue,_,Prev,FinalQueue,Moves):-
+%     success(Queue,FinalQueue),
+%     write("Sucess story  "),
+%     write(Prev),
+%     write(" cause "),
+%     write(Queue),
+%     write(" is "),
+%     writeln(FinalQueue),
+%     Moves=Prev,!.
+
+% solution(Queue,Stack,Prev,FinalQueue,_):-
+%     length(Stack, LenStack),
+%     length(Queue, LenQueue),
+%     write(LenStack),
+%     write(" "),
+%     write(LenQueue),
+%     LenStack =\= 0,
+%     LenQueue =\= 0,
+%     write("Both moves: "),
+%     write(Queue),
+%     write(" "),
+%     write(Stack),
+%     qmove(Queue,Stack,Prev,NewQueu1,NewStack1,NewPrev1),
+%     smove(Queue,Stack,Prev,NewQueu2,NewStack2,NewPrev2),
+%     solution(NewQueu1,NewStack1,NewPrev1,FinalQueue,_),
+%     solution(NewQueu2,NewStack2,NewPrev2,FinalQueue,_),!.
+
+% solution(Queue,Stack,Prev,FinalQueue,_):-
+%     length(Stack, LenStack),
+%     LenStack is 0,
+%     write("Q move "),
+%     writeln(LenStack),
+%     qmove(Queue,Stack,Prev,NewQueu,NewStack,NewPrev),
+%     solution(NewQueu,NewStack,NewPrev,FinalQueue,_),!.
+
+% solution(Queue,Stack,Prev,FinalQueue,_):-
+%     length(Queue, LenQueue),
+%     LenQueue is 0,
+%     write("S move "),
+%     writeln(LenQueue),
+%     smove(Queue,Stack,Prev,NewQueu,NewStack,NewPrev),
+%     solution(NewQueu,NewStack,NewPrev,FinalQueue,_),!.    
+
+
+
+
 % @@@@@@@@@@@@@@@@@@@@@@@@- MAIN FUNCTION -@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 qssort(File, Answer) :-
-    readInput(File, N, InitialQueue),
+    readInput(File, _, InitialQueue),
     sort(InitialQueue,FinalQueue),
-    qmove(InitialQueue,[],"",NewQueue,NewStack,Prev),
-    smove(NewQueue,NewStack,Prev,NQ,NS,NP),
-    writeln(NP).
-    
+    % qmove(InitialQueue,[],"",NewQueue,NewStack,Prev),
+    % smove(NewQueue,NewStack,Prev,NQ,NS,NP),
+    Move=[InitialQueue,[],""],
+    ListMove=[Move],
+    solution(ListMove,FinalQueue,Result),
+    writeln(Result),!.
+
     % --Check the Answer
     % qssort('tests\\qs1.txt', Answer), writeln(Answer), fail.
     
