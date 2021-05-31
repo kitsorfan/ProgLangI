@@ -77,18 +77,10 @@ readLine(Stream, L) :-
 
 
 
-
-
 qmove(Queue,Stack,Prev,NewQueue,NewStack,NewPrev):-
     Queue=[Head|_],
     select(Head,Queue,NewQueue),
-    writeln(""),
-    write("Stack is "),
-    write(Stack),
-    write("  and  "),
-    writeln(Head),
-    Heady=Head,
-    append(Stack,[Heady],New),
+    append(Stack,[Head],New),
     NewStack=New,
     atom_concat(Prev, "Q", NewPrev).
 
@@ -97,8 +89,7 @@ smove(Queue,Stack,Prev,NewQueue,NewStack,NewPrev):-
     last(Stack,X),
     select(X,Stack,NewStack),
     Tail=[X],
-    append(Queue,Tail,New),
-    NewQueue=New,
+    append(Queue,Tail,NewQueue),
     atom_concat(Prev, "S", NewPrev).
 
 success(Queue,FinalQueue):-
@@ -108,13 +99,9 @@ success(Queue,FinalQueue):-
 solution([Move|_],FinalQueue,Moves):-
     Move=[Queue,_,Prev],
     success(Queue,FinalQueue),
-    write("Success "),
-    write(Queue),
-    write(" and prev "),
-    writeln(Prev),
     Moves=Prev.
 
-solution([Move|Rest],FinalQueue,_):-
+solution([Move|Rest],FinalQueue,Moves):-
     Move=[Queue,Stack,Prev],
     not(Stack = []),
     not(Queue = []),
@@ -126,128 +113,47 @@ solution([Move|Rest],FinalQueue,_):-
     Move2=[TempMove2],
     append(Rest,Move1,TempRest),
     append(TempRest,Move2,NewRest),
+    solution(NewRest,FinalQueue,Moves).
 
-    string_length(Prev, Len),
-    % Len < 4,
-
-    write("DUAL MOVE: "),
-    write(Move1),
-    write("     "),
-    write(Move2),
-    write(" ---->  "),
-    writeln(NewRest),
-    solution(NewRest,FinalQueue,_).
-
-solution([Move|Rest],FinalQueue,_):-
+solution([Move|Rest],FinalQueue,Moves):-
     Move=[Queue,Stack,Prev],
     not(Queue = []),
     qmove(Queue,Stack,Prev,NewQueu,NewStack,NewPrev),
     TempMove=[NewQueu,NewStack,NewPrev],
     NewMove=[TempMove],
     append(Rest,NewMove,NewRest),
-    
-    string_length(Prev, Len),
-    % Len < 4,
-    
-    write("Q MOVE: "),
-    write(NewMove),
-    write(" ---->  "),
-    writeln(NewRest),
-    solution(NewRest,FinalQueue,_).
+    solution(NewRest,FinalQueue,Moves).
 
 
-solution([Move|Rest],FinalQueue,_):-
+solution([Move|Rest],FinalQueue,Moves):-
     Move=[Queue,Stack,Prev],
     smove(Queue,Stack,Prev,NewQueu,NewStack,NewPrev),
     TempMove=[NewQueu,NewStack,NewPrev],
     NewMove=[TempMove],
     append(Rest,NewMove,NewRest),
-
-    string_length(Prev, Len),
-    % Len < 4,
-
-    write("S MOVE: "),
-    write(NewMove),
-    write(" ---->  "),
-    writeln(NewRest),
-    solution(NewRest,FinalQueue,_).
+    solution(NewRest,FinalQueue,Moves).
 
 
+giveAnswer(A,"empty"):-
+    A = "".
+giveAnswer(A,A).
 
-
-% solution(Queue,_,Prev,FinalQueue,Moves):-
-%     success(Queue,FinalQueue),
-%     write("Sucess story  "),
-%     write(Prev),
-%     write(" cause "),
-%     write(Queue),
-%     write(" is "),
-%     writeln(FinalQueue),
-%     Moves=Prev,!.
-
-% solution(Queue,Stack,Prev,FinalQueue,_):-
-%     length(Stack, LenStack),
-%     length(Queue, LenQueue),
-%     write(LenStack),
-%     write(" "),
-%     write(LenQueue),
-%     LenStack =\= 0,
-%     LenQueue =\= 0,
-%     write("Both moves: "),
-%     write(Queue),
-%     write(" "),
-%     write(Stack),
-%     qmove(Queue,Stack,Prev,NewQueu1,NewStack1,NewPrev1),
-%     smove(Queue,Stack,Prev,NewQueu2,NewStack2,NewPrev2),
-%     solution(NewQueu1,NewStack1,NewPrev1,FinalQueue,_),
-%     solution(NewQueu2,NewStack2,NewPrev2,FinalQueue,_),!.
-
-% solution(Queue,Stack,Prev,FinalQueue,_):-
-%     length(Stack, LenStack),
-%     LenStack is 0,
-%     write("Q move "),
-%     writeln(LenStack),
-%     qmove(Queue,Stack,Prev,NewQueu,NewStack,NewPrev),
-%     solution(NewQueu,NewStack,NewPrev,FinalQueue,_),!.
-
-% solution(Queue,Stack,Prev,FinalQueue,_):-
-%     length(Queue, LenQueue),
-%     LenQueue is 0,
-%     write("S move "),
-%     writeln(LenQueue),
-%     smove(Queue,Stack,Prev,NewQueu,NewStack,NewPrev),
-%     solution(NewQueu,NewStack,NewPrev,FinalQueue,_),!.    
-
-
-
+msort(List, Sorted)     :- sort(0,  @=<, List,  Sorted).
 
 % @@@@@@@@@@@@@@@@@@@@@@@@- MAIN FUNCTION -@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 qssort(File, Answer) :-
     readInput(File, _, InitialQueue),
-    sort(InitialQueue,FinalQueue),
+    msort(InitialQueue,FinalQueue),
+    % writeln(InitialQueue),
+    % writeln(FinalQueue),
     % qmove(InitialQueue,[],"",NewQueue,NewStack,Prev),
     % smove(NewQueue,NewStack,Prev,NQ,NS,NP),
     Move=[InitialQueue,[],""],
     ListMove=[Move],
-    once(solution(ListMove,FinalQueue,Result)),
-    writeln(Result),!.
+    solution(ListMove,FinalQueue,Result),
+    giveAnswer(Result,Answer),!.
 
     % --Check the Answer
     % qssort('tests\\qs1.txt', Answer), writeln(Answer), fail.
     
     
-    
-    
-    
-%     write(InitialQueue),
-%     write(" "),
-%     writeln(FinalQueue),
-%     write(NewQueue),
-%     write(" "),
-%     write(NewStack),
-%     write(" "),
-% % write(NQ),
-% write(" "),
-% write(NS),
-% write(" "),
-% writeln(NP).
