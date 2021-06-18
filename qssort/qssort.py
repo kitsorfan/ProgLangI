@@ -133,7 +133,7 @@ def solve(initState,finalState): #BFS
         for t in s.accessible():        # add the two accessible states to our queu (if they are not already visited)
             if t.success(finalState):
                 # seen.add(t)           # adding the last state won't change anything
-                # print(len(seen))      # see the number of all states (helpful for debugging)
+                print(len(seen))      # see the number of all states (helpful for debugging)
                 return t                
             if hash(t) not in seen:     # note that we do not parse the whole object to the seen, but the
                 seen.add(hash(t))       # hash of that object. Thus we save time+space.
