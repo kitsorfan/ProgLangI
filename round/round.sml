@@ -139,19 +139,9 @@ fun round inputFile =
     print(Int.toString(res1)^" "^Int.toString(res2)^"\n")
   end;
 
-  (* testing *)
+(* testing *)
 
- (* print("\n\n\n\n\n\n\n"); *)
 (* round "tests/r2.txt";  *)
-(* createFinalList (1, 5); *)
-(* multipleFinalList(4,4,[]);   *)
-(* print("\n"); *)
-(* compareTwoList([1,1,1,1],[2,0,2,2],4); *)
-(* val maxy = maxOfList (compareTwoList([1,1,1,1],[2,0,2,2],4));
-val sumy = sumOfList (compareTwoList([1,1,1,1],[2,0,2,2],4));
-checkMax(maxy,sumy); *)
-
-(* print("\n\n\n\n\n\n\n"); *)
 
 (* this is not a valid command. It cannot be compiled. Thought it terminates the interactive environment allowing as to run it again if we change the code, I guess it does exit in some way*)
 (* exit;  *)
