@@ -71,24 +71,13 @@ fun compareAllLists([],initialState,cities)= nil
   | compareAllLists(target::rest,initial,cities)=
   compareTwoList(target,initial,cities)::compareAllLists(rest,initial,cities);
 
-(*@@@@@@@@@@@@@@@@@@- Find max of a list -@@@@@@@@@@@@@@@@@@*)
+
+(*@@@@@@@@@@@@@@@@@@- Find the max and the sum of a list -@@@@@@@@@@@@@@@@@@*)
 
 
-fun maxOfList [] = raise Empty 
- | maxOfList [x] = x
- | maxOfList (x::xs) =
-      let 
-        val y = maxOfList xs
-      in
-        if x > y then x else y
-      end;
-
-(*@@@@@@@@@@@@@@@@@@- Find sum of a list -@@@@@@@@@@@@@@@@@@*)
-
-
-
-(*@@@@@@@@@@@@@@@@@@- Check max -@@@@@@@@@@@@@@@@@@*)
-
+fun maxAndSum ([],currentMax, currentSum) =  (currentMax,currentSum)
+ | maxAndSum ((x::xs),currentMax,currentSum) =
+    if x > currentMax then maxAndSum(xs, x, (currentSum+x)) else maxAndSum(xs, currentMax, (currentSum+x));
 
 
 (*@@@@@@@@@@@@@@@@@@-  Check max -@@@@@@@@@@@@@@@@@@*)
@@ -99,9 +88,8 @@ let
   fun checkMax (max, sum) = 
     if ((2*max-sum)>=2) then valOf Int.maxInt
     else sum;
-  fun sumOfList L = foldl(op +) 0 L;
-  val maxy = maxOfList a
-  val sumy = sumOfList a
+  val (maxy,sumy) = maxAndSum(a, 0,0)
+
   val result = checkMax(maxy, sumy)
 in
   result::movements rest
@@ -141,8 +129,8 @@ fun round inputFile =
   end;
 
 (* testing *)
-(* round "tests/r1.txt"; 
-round "tests/r2.txt";  *)
+round "tests/r1.txt"; 
+round "tests/r2.txt"; 
 round "tests/r31.txt";  
 
 
