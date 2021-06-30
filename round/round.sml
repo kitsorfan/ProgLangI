@@ -75,7 +75,7 @@ fun multipleFinalList (0, cars, initial,cities,min,i,minI) = (min,minI)
          val result = checkMax(maxy,sumy)
 
     in 
-        if (result<min) then multipleFinalList(allCities-1,cars,initial,cities,result,(i+1),(allCities-1))
+        if (result<=min) then multipleFinalList(allCities-1,cars,initial,cities,result,(i+1),(allCities-1))
         else multipleFinalList(allCities-1,cars,initial,cities,min,(i+1),minI)
     end;
 
@@ -108,10 +108,21 @@ fun round inputFile =
   end;
 
 (* testing *)
-round "tests/r1.txt"; 
+(* round "tests/r1.txt"; 
+round "tests/r5.txt";
 round "tests/r2.txt"; 
-round "tests/r31.txt";  
+round "tests/r31.txt";   *)
 
 
 (* this is not a valid command. It cannot be compiled. Thought it terminates the interactive environment allowing as to run it again if we change the code, I guess it does exit in some way*)
 (* exit;  *)
+
+
+(* 
+
+
+
+
+
+
+ *)
