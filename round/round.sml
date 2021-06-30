@@ -85,19 +85,21 @@ fun maxOfList [] = raise Empty
 
 (*@@@@@@@@@@@@@@@@@@- Find sum of a list -@@@@@@@@@@@@@@@@@@*)
 
-fun sumOfList L = foldl(op +) 0 L;
+
 
 (*@@@@@@@@@@@@@@@@@@- Check max -@@@@@@@@@@@@@@@@@@*)
 
-fun checkMax (max, sum) = 
-  if ((2*max-sum)>=2) then valOf Int.maxInt
-  else sum;
+
 
 (*@@@@@@@@@@@@@@@@@@-  Check max -@@@@@@@@@@@@@@@@@@*)
 
 fun movements([])=nil
 | movements(a::rest) = 
 let
+  fun checkMax (max, sum) = 
+    if ((2*max-sum)>=2) then valOf Int.maxInt
+    else sum;
+  fun sumOfList L = foldl(op +) 0 L;
   val maxy = maxOfList a
   val sumy = sumOfList a
   val result = checkMax(maxy, sumy)
@@ -127,8 +129,7 @@ fun round inputFile =
       val finalList = multipleFinalList(cities,cars)
       val comparedLists = compareAllLists(finalList,positions,cities)
       val moves = movements(comparedLists)
-      val headmoves = hd moves
-      val result =  minOfList(moves,headmoves,0,0)
+      val result =  minOfList(moves,(hd moves),0,0)
       val res1 = #1 result
       val res2 = #2 result
        
@@ -140,8 +141,10 @@ fun round inputFile =
   end;
 
 (* testing *)
+(* round "tests/r1.txt"; 
+round "tests/r2.txt";  *)
+round "tests/r31.txt";  
 
-(* round "tests/r2.txt";  *)
 
 (* this is not a valid command. It cannot be compiled. Thought it terminates the interactive environment allowing as to run it again if we change the code, I guess it does exit in some way*)
 (* exit;  *)
