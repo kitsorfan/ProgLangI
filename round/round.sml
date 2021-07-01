@@ -90,8 +90,8 @@ fun maxAndSum ([],currentMax, currentSum) =  (currentMax,currentSum) (* End of r
 (*@@@@@@@@@@@@@@@@@@- 5. Merged Multifunction -@@@@@@@@@@@@@@@@@@*)
 (* This function is does multiple things. Takes many parameters and returns the final answer tuple *)
 
-fun mergedFunction (0, cars, initial,cities,min,i,minI) = (min,minI) (* end of recursion (first parameter is 0) return (min, index) *)
-  | mergedFunction (allCities, cars, initial, cities,min,i,minI) = 
+fun mergedFunction (0, cars, initial,cities,min,minI) = (min,minI) (* end of recursion (first parameter is 0) return (min, index) *)
+  | mergedFunction (allCities, cars, initial, cities,min,minI) = 
     let
         val temp = createFinalList(allCities-1,cars)          (* we create a new final state to examine. Starting from [allCities-1, allCities-1, ... , allCities-1] *)
         val compared = compareTwoLists(temp, initial, cities) (* we create the compared list (difference between final and initial state) *)
@@ -102,8 +102,8 @@ fun mergedFunction (0, cars, initial,cities,min,i,minI) = (min,minI) (* end of r
          val result = checkMax(maxy,sumy)                     (* check if max and sum is valid *)
 
     in 
-        if (result<=min) then mergedFunction(allCities-1,cars,initial,cities,result,(i+1),(allCities-1)) (* Recursion: start from a very big min, and each time call the function with the current min, and the current index*)
-        else mergedFunction(allCities-1,cars,initial,cities,min,(i+1),minI)
+        if (result<=min) then mergedFunction(allCities-1,cars,initial,cities,result,(allCities-1)) (* Recursion: start from a very big min, and each time call the function with the current min, and the current index*)
+        else mergedFunction(allCities-1,cars,initial,cities,min,minI)
     end;
 
 
@@ -116,7 +116,7 @@ fun round inputFile =
       val cities = #1 inputTuple           
       val cars = #2 inputTuple               
       val initialState = #3 inputTuple        
-      val result = mergedFunction(cities, cars, initialState, cities,(valOf Int.maxInt),0,0) (* calls *)
+      val result = mergedFunction(cities, cars, initialState, cities,(valOf Int.maxInt),0) (* calls *)
       val res1 = #1 result  (* seperate result tuple to each components*)
       val res2 = #2 result
   in
