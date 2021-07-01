@@ -97,7 +97,7 @@ fun mergedFunction (0, cars, initial,cities,min,i,minI) = (min,minI) (* end of r
         val compared = compareTwoLists(temp, initial, cities) (* we create the compared list (difference between final and initial state) *)
         fun checkMax (max, sum) =                             (* auxilary function to check if a (max,sum) tuple is valid*)
            if ((2*max-sum)>=2) then valOf Int.maxInt          (* max - (sum-max)<=1*)
-             else sum;                                        (* Return the sum if it is valid, else return "a very large number" *)
+             else sum;                                        (* Return the sum if it is valid, else return "a very large number". Note here is >= because we start the scan from the allCities-1, not from 0 *)
          val (maxy,sumy) = maxAndSum(compared, 0,0)           (* get max and sum of the list*)
          val result = checkMax(maxy,sumy)                     (* check if max and sum is valid *)
 
