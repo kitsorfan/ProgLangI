@@ -53,17 +53,6 @@ distance(A,B,_,Answer):-
 distance(A,B,City,Answer):-
     Answer is ((City-B)+A),!.
 
-
-compareTwoLists([],[],_,[]).
-compareTwoLists([Target|Trest],[Current|Crest],Cities,[Answer|Arest]):-
-    distance(Target,Current,Cities,Answer),
-    compareTwoLists(Trest,Crest,Cities,Arest).
-
-
-% @@@@@@@@@@@@@@@@@@- 4. Find the max and the sum of a list -@@@@@@@@@@@@@@@@@@
-% Find the maxiumum and the sum of a list
-%    ex. [4,2,1,4,8,5] -> (max, sum) = (8,24)
-
 % auxilary
 giveMax(A,B,C):-
     A>B,
@@ -71,23 +60,17 @@ giveMax(A,B,C):-
 giveMax(_,B,C):-
     C=B.
 
+compareTwoLists([],[],_,Max,Sum,Max,Sum).
+compareTwoLists([Target|Trest],[Current|Crest],Cities,CurrentMax,CurrentSum,Max,Sum):-
+    distance(Target,Current,Cities,Answer),
+    NewSum is CurrentSum+Answer,
+    giveMax(CurrentMax,Answer,NewMax),
+    compareTwoLists(Trest,Crest,Cities,NewMax,NewSum,Max,Sum).
 
-maxAndSum([],Max,Sum,Max,Sum).
-    % Max=CurrentMax,
-    % Sum=CurrentSum.
-maxAndSum([Head|Rest],CurrentMax,CurrentSum,Max,Sum):-
-    NewSum is CurrentSum+Head,
-    giveMax(CurrentMax,Head,NewMax),
-    maxAndSum(Rest,NewMax,NewSum,Max,Sum),!.
+
 
 % @@@@@@@@@@@@@@@@@@- 5. Merged Multifunction -@@@@@@@@@@@@@@@@@@
 % This function is does multiple things. Takes many parameters and returns the final answer tuple
-
-
-% % auxilary
-% checkMax(Max,Sum):-
-%     (2*Max-Sum) < 2.
-
 
 % clause that returns Minumum of two values
 giveMin(A,Ai,B,_,C,Ci):-
@@ -101,19 +84,15 @@ giveMin(_,_,B,Bi,C,Ci):-
 
 
 mergedFunction(0,_,_,_,Min,MinI,Min,MinI).
-    % FinalMin = Min,
-    % FinalIndexMin = MinI,!.
 mergedFunction(AllCities,Cars,Initial,Cities,Min,MinI,FinalMin,FinalIndexMin):-
     NewCities is (AllCities-1), 
     createFinalList(NewCities,Cars,Temp),
-    compareTwoLists(Temp,Initial,Cities,Compared),
-    maxAndSum(Compared,0,0,Maxy,Samy),
+    compareTwoLists(Temp,Initial,Cities,0,0,Maxy,Samy),
     2*Maxy-Samy < 2,!,
     % checkMax(Maxy,Samy),!,
     giveMin(Samy,NewCities,Min,MinI,NewMin,NewMinI),
 
     % write(Initial),write(" "), write(Temp),write(" "),
-    % write(Compared),
     % write(" | "),
     % write(Maxy),
     % write(" "),
