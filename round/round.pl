@@ -51,94 +51,83 @@ distance(A,B,_,Answer):-
     A>=B,
     Answer is (A-B).
 distance(A,B,City,Answer):-
-    Answer is (City-B+A).
+    Answer is ((City-B)+A),!.
 
 
 compareTwoLists([],[],_,[]).
 compareTwoLists([Target|Trest],[Current|Crest],Cities,[Answer|Arest]):-
     distance(Target,Current,Cities,Answer),
-    compareTwoLists(Trest,Crest,Cities,Arest),!.
+    compareTwoLists(Trest,Crest,Cities,Arest).
 
 
 % @@@@@@@@@@@@@@@@@@- 4. Find the max and the sum of a list -@@@@@@@@@@@@@@@@@@
 % Find the maxiumum and the sum of a list
 %    ex. [4,2,1,4,8,5] -> (max, sum) = (8,24)
 
-% % auxilary
-% giveMax(A,B,C):-
-%     A>B,
-%     C=A.
-% giveMax(_,B,C):-
-%     C=B.
+% auxilary
+giveMax(A,B,C):-
+    A>B,
+    C=A,!.
+giveMax(_,B,C):-
+    C=B.
 
 
-maxAndSum([],CurrentMax,CurrentSum,Max,Sum):-
-    Max=CurrentMax,
-    Sum=CurrentSum.
-maxAndSum([Head|Rest],CurrentMax,CurrentSum,Max,Sum):-
-    Head>CurrentMax,            % if then
-    NewSum is CurrentSum+Head,
-    maxAndSum(Rest,Head,NewSum,Max,Sum),!.
+maxAndSum([],Max,Sum,Max,Sum).
+    % Max=CurrentMax,
+    % Sum=CurrentSum.
 maxAndSum([Head|Rest],CurrentMax,CurrentSum,Max,Sum):-
     NewSum is CurrentSum+Head,
-    maxAndSum(Rest,CurrentMax,NewSum,Max,Sum),!.
+    giveMax(CurrentMax,Head,NewMax),
+    maxAndSum(Rest,NewMax,NewSum,Max,Sum),!.
 
 % @@@@@@@@@@@@@@@@@@- 5. Merged Multifunction -@@@@@@@@@@@@@@@@@@
 % This function is does multiple things. Takes many parameters and returns the final answer tuple
 
 
-% auxilary
-checkMax(Max,Sum,Result):-
-    Check is (2*Max-Sum),
-    Check>=2,
-    Result is 80008,!. % a very large number. By convention the maximum distance can be 10.000 (maximum number of cities)
-checkMax(_,Sum,Result):-
-    Result is Sum.
+% % auxilary
+% checkMax(Max,Sum):-
+%     (2*Max-Sum) < 2.
 
-mergedFunction(0,_,_,_,Min,MinI,FinalMin,FinalIndexMin):-
-    FinalMin is Min,
-    FinalIndexMin is MinI.
-mergedFunction(AllCities,Cars,Initial,Cities,Min,_,FinalMin,FinalIndexMin):-
-    NewCities is (AllCities-1), 
-    createFinalList(NewCities,Cars,Temp),
-    compareTwoLists(Temp,Initial,Cities,Compared),
-    maxAndSum(Compared,0,0,Maxy,Samy),
-    write(Initial),write(" "), write(Temp),write(" "),
-    write(Compared),
-    write(" | "),
-    write(Maxy),
-    write(" "),
-    write(Samy),
 
-    checkMax(Maxy,Samy,Result),
-    write(" ---> "),
-    writeln(Result),
-    Result=<Min,!,
-    mergedFunction(NewCities,Cars,Initial,Cities,Result,NewCities,FinalMin,FinalIndexMin),!.
+% clause that returns Minumum of two values
+giveMin(A,Ai,B,_,C,Ci):-
+    A=<B,
+    C=A,
+    Ci=Ai.
+giveMin(_,_,B,Bi,C,Ci):-
+    C=B,
+    Ci=Bi.
 
+
+
+mergedFunction(0,_,_,_,Min,MinI,Min,MinI).
+    % FinalMin = Min,
+    % FinalIndexMin = MinI,!.
 mergedFunction(AllCities,Cars,Initial,Cities,Min,MinI,FinalMin,FinalIndexMin):-
     NewCities is (AllCities-1), 
     createFinalList(NewCities,Cars,Temp),
     compareTwoLists(Temp,Initial,Cities,Compared),
     maxAndSum(Compared,0,0,Maxy,Samy),
-    write(Initial),write(" "), write(Temp),write(" "),
-    write(Compared),
-    write(" | "),
-    write(Maxy),
-    write(" "),
-    write(Samy),
+    2*Maxy-Samy < 2,!,
+    % checkMax(Maxy,Samy),!,
+    giveMin(Samy,NewCities,Min,MinI,NewMin,NewMinI),
 
-    checkMax(Maxy,Samy,Result),
-    write(" ---> "),
-    writeln(Result),
-    mergedFunction(NewCities,Cars,Initial,Cities,Min,MinI,FinalMin,FinalIndexMin).
+    % write(Initial),write(" "), write(Temp),write(" "),
+    % write(Compared),
+    % write(" | "),
+    % write(Maxy),
+    % write(" "),
+    % writeln(Samy),
+    % writeln(NewMin),
+
+    mergedFunction(NewCities,Cars,Initial,Cities,NewMin,NewMinI,FinalMin,FinalIndexMin),!.
 
 
 % @@@@@@@@@@@@@@@@@@@@@@@@- MAIN FUNCTION -@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 round(File,Min,MinI) :-
     readInput(File, Cities, Cars, InitialState),             % 1. Parse the file
-    mergedFunction(Cities,Cars,InitialState,Cities,80008,0,Min,MinI),!.
+    mergedFunction(Cities,Cars,InitialState,Cities,10002,0,Min,MinI),!.
 
 % --Check the Answer
 % round('tests/r1.txt', Answer), writeln(Answer), fail.
-% round('tests/r2.txt', Min,MinI), write(Min),write(" "), writeln(MinI), fail.
+% round('tests/r1.txt', Min,MinI), write(Min),write(" "), writeln(MinI), fail.
