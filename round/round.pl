@@ -59,8 +59,9 @@ distance(A,B,City,Answer):-
 % Auxilary: give min of two numbers
 giveMax(A,B,C):-
     A>B,
-    C=A,!.
-giveMax(_,B,C):-
+    C=A.
+giveMax(A,B,C):-
+    A=<B,
     C=B.
 
 % Auxilary: return Min and Index
@@ -94,7 +95,7 @@ mergedFunction(Cities,_,_,Cities,Min,MinI,Min,MinI).
 mergedFunction(CityIndex,Cars,Initial,Cities,Min,MinI,FinalMin,FinalIndexMin):-
     NewCityIndex is (CityIndex+1), 
     compareWithFinal(CityIndex,Initial,Cities,0,0,Maxy,Samy),
-    2*Maxy-Samy < 2,!, % check validity of Max and Sum tuple
+    2*Maxy-Samy < 2, % check validity of Max and Sum tuple
     giveMin(Samy,CityIndex,Min,MinI,NewMin,NewMinI),
 
     write(Initial),write(" "),write(" now checking "), write(CityIndex),write(" "),
