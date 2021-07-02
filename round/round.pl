@@ -65,7 +65,7 @@ giveMax(_,B,C):-
 
 % Auxilary: return Min and Index
 giveMin(A,Ai,B,_,C,Ci):-
-    A=<B,
+    A<B,
     C=A,
     Ci=Ai.
 giveMin(_,_,B,Bi,C,Ci):-
@@ -90,27 +90,28 @@ compareWithFinal(FinalCity,[Current|Crest],Cities,CurrentMax,CurrentSum,Max,Sum)
 % @@@@@@@@@@@@@@@@@@- 4. Merged Multifunction -@@@@@@@@@@@@@@@@@@
 % This function is does multiple things. Takes many parameters and returns the final answer tuple
 
-mergedFunction(0,_,_,_,Min,MinI,Min,MinI).
-mergedFunction(AllCities,Cars,Initial,Cities,Min,MinI,FinalMin,FinalIndexMin):-
-    NewCities is (AllCities-1), 
-    compareWithFinal(NewCities,Initial,Cities,0,0,Maxy,Samy),
+mergedFunction(Cities,_,_,Cities,Min,MinI,Min,MinI).
+mergedFunction(CityIndex,Cars,Initial,Cities,Min,MinI,FinalMin,FinalIndexMin):-
+    NewCityIndex is (CityIndex+1), 
+    compareWithFinal(CityIndex,Initial,Cities,0,0,Maxy,Samy),
     2*Maxy-Samy < 2,!, % check validity of Max and Sum tuple
-    giveMin(Samy,NewCities,Min,MinI,NewMin,NewMinI),
+    giveMin(Samy,CityIndex,Min,MinI,NewMin,NewMinI),
 
-    % write(Initial),write(" "), write(Temp),write(" "),
-    % write(" | "),
-    % write(Maxy),
-    % write(" "),
-    % writeln(Samy),
-    % writeln(NewMin),
+    write(Initial),write(" "),write(" now checking "), write(CityIndex),write(" "),
+    write(" | "),
+    write(Maxy),
+    write(" "),
+    write(Samy),
+    write(" ---> "),
+    writeln(NewMin),
 
-    mergedFunction(NewCities,Cars,Initial,Cities,NewMin,NewMinI,FinalMin,FinalIndexMin),!.
+    mergedFunction(NewCityIndex,Cars,Initial,Cities,NewMin,NewMinI,FinalMin,FinalIndexMin),!.
 
 
 % @@@@@@@@@@@@@@@@@@@@@@@@- MAIN CLAUSE -@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 round(File,Min,MinI) :-
     readInput(File, Cities, Cars, InitialState),             % 1. Parse the file
-    mergedFunction(Cities,Cars,InitialState,Cities,10002,0,Min,MinI),!.
+    mergedFunction(0,Cars,InitialState,Cities,10002,0,Min,MinI),!.
 
 
 
