@@ -72,15 +72,6 @@ giveMin(_,_,B,Bi,C,Ci):-
     C=B,
     Ci=Bi.
 
-% @@@@@@@@@@@@@@@@@@- 2. Create a final state -@@@@@@@@@@@@@@@@@@*)
-% Take a number, targetCity, and create a final state, a list with cars elements.
-% ex. For targetCity=4 and cars=6 we create: [4,4,4,4,4,4]
-
-createFinalList(_,0,[]).                         % end of recursion, return empty list
-createFinalList(TargetCity,Cars,[TargetCity|Rest]):-   
-    NewCars is (Cars-1),                        
-    createFinalList(TargetCity,NewCars,Rest).     % we use cut because we want to find the first one possible
-
 
 % @@@@@@@@@@@@@@@@@@- 3. Compare two lists - (subtract target state - current state) -@@@@@@@@@@@@@@@@@@
 % Take two lists, the initial and a final state, and find their difference. Note that if a>b we just find a-b, else we find city-b+a
@@ -88,12 +79,12 @@ createFinalList(TargetCity,Cars,[TargetCity|Rest]):-
 %        B. initial state [2,2,0,2] and final state [0,0,0,0] -> [2,2,0,2]  (assume we have 4 cities)
 %        Then it return the Max and Sum of that list
 
-compareTwoLists([],[],_,Max,Sum,Max,Sum).
-compareTwoLists([Target|Trest],[Current|Crest],Cities,CurrentMax,CurrentSum,Max,Sum):-
-    distance(Target,Current,Cities,Answer),
-    NewSum is CurrentSum+Answer,
+compareWithFinal(_,[],_,Max,Sum,Max,Sum).
+compareWithFinal(FinalCity,[Current|Crest],Cities,CurrentMax,CurrentSum,Max,Sum):-
+    distance(FinalCity,Current,Cities,Answer),
+    NewSum is CurrentSum + Answer,
     giveMax(CurrentMax,Answer,NewMax),
-    compareTwoLists(Trest,Crest,Cities,NewMax,NewSum,Max,Sum).
+    compareWithFinal(FinalCity,Crest,Cities,NewMax,NewSum,Max,Sum).
 
 
 % @@@@@@@@@@@@@@@@@@- 4. Merged Multifunction -@@@@@@@@@@@@@@@@@@
@@ -102,8 +93,7 @@ compareTwoLists([Target|Trest],[Current|Crest],Cities,CurrentMax,CurrentSum,Max,
 mergedFunction(0,_,_,_,Min,MinI,Min,MinI).
 mergedFunction(AllCities,Cars,Initial,Cities,Min,MinI,FinalMin,FinalIndexMin):-
     NewCities is (AllCities-1), 
-    createFinalList(NewCities,Cars,Temp),
-    compareTwoLists(Temp,Initial,Cities,0,0,Maxy,Samy),
+    compareWithFinal(NewCities,Initial,Cities,0,0,Maxy,Samy),
     2*Maxy-Samy < 2,!, % check validity of Max and Sum tuple
     giveMin(Samy,NewCities,Min,MinI,NewMin,NewMinI),
 
@@ -117,7 +107,7 @@ mergedFunction(AllCities,Cars,Initial,Cities,Min,MinI,FinalMin,FinalIndexMin):-
     mergedFunction(NewCities,Cars,Initial,Cities,NewMin,NewMinI,FinalMin,FinalIndexMin),!.
 
 
-% @@@@@@@@@@@@@@@@@@@@@@@@- MAIN FUNCTION -@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+% @@@@@@@@@@@@@@@@@@@@@@@@- MAIN CLAUSE -@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 round(File,Min,MinI) :-
     readInput(File, Cities, Cars, InitialState),             % 1. Parse the file
     mergedFunction(Cities,Cars,InitialState,Cities,10002,0,Min,MinI),!.
