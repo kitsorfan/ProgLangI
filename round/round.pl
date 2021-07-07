@@ -1,3 +1,4 @@
+          
 /*
 ********************************************************************************
   Project     : Programming Languages 1 - Assignment 2 - Exercise longest
@@ -51,7 +52,7 @@ readLine(Stream, L) :-
 
 % Auxilary: calculate distance
 distance(A,B,_,Answer):-
-    A>=B,
+    A>=B,!,
     Answer is (A-B).
 distance(A,B,City,Answer):-
     Answer is ((City-B)+A).
@@ -59,7 +60,7 @@ distance(A,B,City,Answer):-
 % Auxilary: give min of two numbers
 giveMax(A,B,C):-
     A>B,
-    C=A.
+    C=A,!.
 giveMax(A,B,C):-
     A=<B,
     C=B.
@@ -77,7 +78,7 @@ giveMin(_,_,B,Bi,C,Ci):-
 checkDistance(Max,Sum,Result):-
     2*Max-Sum < 2, % check validity of Max and Sum tuple
     Result is Sum.
-checkDistance(_,_,100002).
+checkDistance(_,_,10002).
 
 
 
@@ -92,7 +93,7 @@ compareWithFinal(FinalCity,[Current|Crest],Cities,CurrentMax,CurrentSum,Max,Sum)
     distance(FinalCity,Current,Cities,Answer),
     NewSum is CurrentSum + Answer,
     giveMax(CurrentMax,Answer,NewMax),
-    compareWithFinal(FinalCity,Crest,Cities,NewMax,NewSum,Max,Sum).
+    compareWithFinal(FinalCity,Crest,Cities,NewMax,NewSum,Max,Sum),!.
 
 
 % @@@@@@@@@@@@@@@@@@- 4. Merged Multifunction -@@@@@@@@@@@@@@@@@@
@@ -116,9 +117,8 @@ compareWithFinal(FinalCity,[Current|Crest],Cities,CurrentMax,CurrentSum,Max,Sum)
 %     mergedFunction(NewCityIndex,Cars,Initial,Cities,NewMin,NewMinI,FinalMin,FinalIndexMin),!.
 
 createCityTable(0,[]).
-createCityTable(Cities,[CityTable|Rest]):-
+createCityTable(Cities,[0|Rest]):-
     NewCities is Cities-1,
-    CityTable is 0,
     createCityTable(NewCities,Rest).
 
 invertTable([],FinalInverted,FinalInverted).
@@ -126,29 +126,27 @@ invertTable([Init|InitRest],Inverted,FinalInverted):-
     nth0(Init,Inverted,X,R),
     NewX is X+1,
     nth0(Init,NewInverted,NewX,R),
-    invertTable(InitRest,NewInverted,FinalInverted).
+    invertTable(InitRest,NewInverted,FinalInverted),!.
 
-twoIndexGame(AllCities, _, _, AllCities, _, _, FinalMin, FinalMinI, FinalMin, FinalMinI).                   % MainIndex == AllCities : end of recursion
-twoIndexGame(MainIndex, AllCities, CityTable, AllCities, Sum, AllCars, Min, MinI, FinalMin, FinalMinI):-    % MaxIndex == AllCities : MaxIndex = 0 (pacman effect)
-    twoIndexGame(MainIndex, 0, CityTable, AllCities, Sum, AllCars, Min, MinI, FinalMin, FinalMinI).  
-twoIndexGame(MainIndex, MainIndex, CityTable, AllCities, Sum, AllCars, Min, MinI, FinalMin, FinalMinI):-    % MaxIndex == MainIndex : MaxIndex++
+twoIndexGame(_, _, [],_, _, _, _, FinalMin, FinalMinI, FinalMin, FinalMinI).                   % MainIndex == AllCities : end of recursion
+twoIndexGame(MainIndex, AllCities, CityTable,[_|DoubleRest], AllCities, Sum, AllCars, Min, MinI, FinalMin, FinalMinI):-    % MaxIndex == AllCities : MaxIndex = 0 (pacman effect)
+    twoIndexGame(MainIndex, 0, CityTable,DoubleRest, AllCities, Sum, AllCars, Min, MinI, FinalMin, FinalMinI).  
+twoIndexGame(MainIndex, MainIndex, CityTable,[_|DoubleRest], AllCities, Sum, AllCars, Min, MinI, FinalMin, FinalMinI):-    % MaxIndex == MainIndex : MaxIndex++
     NewMaxIndex is MainIndex+1,
-    twoIndexGame(MainIndex, NewMaxIndex, CityTable, AllCities, Sum, AllCars, Min, MinI, FinalMin, FinalMinI).
+    twoIndexGame(MainIndex, NewMaxIndex, CityTable,DoubleRest, AllCities, Sum, AllCars, Min, MinI, FinalMin, FinalMinI).
         
-twoIndexGame(MainIndex, MaxIndex, CityTable, AllCities, Sum, AllCars, Min, MinI, FinalMin, FinalMinI):-     % MaxIndex points to zero : MaxIndex++
-    nth0(MaxIndex,CityTable,0),
+twoIndexGame(MainIndex, MaxIndex, CityTable,[0|DoubleRest], AllCities, Sum, AllCars, Min, MinI, FinalMin, FinalMinI):-     % MaxIndex points to zero : MaxIndex++
     NewMaxIndex is MaxIndex+1,
-    twoIndexGame(MainIndex, NewMaxIndex, CityTable, AllCities, Sum, AllCars, Min, MinI, FinalMin, FinalMinI).
+    twoIndexGame(MainIndex, NewMaxIndex, CityTable,DoubleRest, AllCities, Sum, AllCars, Min, MinI, FinalMin, FinalMinI).
 
-twoIndexGame(MainIndex, MaxIndex, CityTable, AllCities, Sum, AllCars, Min, MinI, FinalMin, FinalMinI):-     % Pointers in normal positions
-    nth0(MainIndex,CityTable,CurrentCars),  % CityTables[MainIndex]
+twoIndexGame(MainIndex, MaxIndex, [CurrentCars|CityTableRest],DoubleTable, AllCities, Sum, AllCars, Min, MinI, FinalMin, FinalMinI):-     % Pointers in normal positions
     NewSum is (Sum + AllCars - AllCities*CurrentCars ),
     distance(MainIndex, MaxIndex, AllCities, MaxDistance),
     % write(Sum),write(" "), write(MaxDistance),write(" "), write(MainIndex),write(" "), write(MaxIndex),write(" "), writeln(CurrentCars),
     checkDistance(MaxDistance,NewSum,Result),
     giveMin(Result,MainIndex,Min,MinI,NewMin,NewMinI),
     NewMainIndex is MainIndex+1,
-    twoIndexGame(NewMainIndex, MaxIndex, CityTable, AllCities, NewSum, AllCars, NewMin, NewMinI, FinalMin, FinalMinI).
+    twoIndexGame(NewMainIndex, MaxIndex, CityTableRest,DoubleTable, AllCities, NewSum, AllCars, NewMin, NewMinI, FinalMin, FinalMinI),!.
 
     
 
@@ -163,12 +161,20 @@ round(File,Min,MinI) :-
     % writeln(CityTable),
     % mergedFunction(0,Cars,InitialState,Cities,10002,0,Min,MinI),
     % write(Min),write(" "),writeln(MinI),
-    twoIndexGame(1, 2, CityTable, Cities, Samy, Cars, Samy, 0, Min, MinI),
+    append(CityTable,CityTable,DoubleTable),!,
+    % writeln(DoubleTable),
+    DoubleTable = [_|Rest1],
+    CityTable = [_|T],
+    twoIndexGame(1, 2, T, Rest1, Cities, Samy, Cars, Samy, 0, Min, MinI),!.
     % write(FinalMin),write(" "),writeln(FinalMinI),
-    !.
+    
 
 
 
+% @@@@@@-- Testing--@@@@@@
+% round('tests/r31.txt', Min,MinI), write(Min),write(" "), writeln(MinI),
+%    statistics(walltime, [NewTimeSinceStart | [ExecutionTime]]),
+%    write('Execution took '), write(ExecutionTime), write(' ms.'), nl.
 
 % @@@@@@-- Testing--@@@@@@
 % round('tests/r1.txt', Answer), writeln(Answer), fail.
