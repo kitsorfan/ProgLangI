@@ -8,25 +8,14 @@
  ProgLangI 2021, ECE-NTUA
  *******************************************************************************
 
->> TRANSLATING OUR SML SOLUTION:
+>> TRYING TO TRANSLATE SML SOLUTION:
 ---------------------------------
-    This solutions follows the same steps descriped in our previous SML solution. Though it wasn't efficient enough for Prolog pattern matching.
-
-Initial thoughts: We have to find the city with the minimum sum of distances from our initial state. 
-On the same time we have to assure that the largest distance of individual cars 
+    At first we tried to translate the SML solution. Doing that succesfully we found out that it wasn't efficient enough. We did many modifications, nevertheless we couldn't pass the final.
 
 Initial thoughts: We have to find the city from with the minimum sum of distances, where the car with maximum distance, has a distance at max one edge greater than the sum of all the other distances.
 
-Initial Steps:
-1. Parse the file (identify cities, cars, intialState)
-2. Create all possible final States (list of lists)
-3. For each final state find the distance from the initial state (list of lists). This is a list o distances
-4. For every final-initial distance, find the sum of individual distances and the max individual distance
-5. Check if sum and max is  legit, and create a list of legit sums.
-6.  Find the min sum and its index in the list. This is your result.
-
-These steps produce the wanted result, but doing them seperetaly is not efficient, thus we had to merge many functions together to reduce time and space.
-We avoided to create lists of lists, by initially merging steps 2-3-4 then 4-5 and finally we merged step 6.
+New Approach:   We create an inverted list showing how many cars are in every city (initial list shows where everey car is).
+                With that list, and knowing the initial sum of distances from the zero final state, we can move two pointers (one main, and one showing next to the main) updating every time the sum and the max.
 
 */
 
@@ -48,24 +37,18 @@ readLine(Stream, L) :-
 
 
 
-% @@@@@@@@@@@@@@@@@@- Auxilaries -@@@@@@@@@@@@@@@@@@*)
+% @@@@@@@@@@@@@@@@@@- 2. Auxilaries -@@@@@@@@@@@@@@@@@@*)
 
-% Auxilary: calculate distance
-distance(A,B,_,Answer):-
-    A>=B,!,
-    Answer is (A-B).
-distance(A,B,City,Answer):-
-    Answer is ((City-B)+A).
-
-% Auxilary: give min of two numbers
-giveMax(A,B,C):-
+% Auxilary: give max of two numbers. C is the result
+giveMax(A,B,C):-    
     A>B,
-    C=A,!.
-giveMax(A,B,C):-
+    C=A,!.              % not sure if this cut (!) speeds up. It does no harm though.
+    giveMax(A,B,C):-
     A=<B,
     C=B.
 
-% Auxilary: return Min and Index
+% Auxilary: give Min and its Index
+% Ai, is the index of A
 giveMin(A,Ai,B,_,C,Ci):-
     A<B,
     C=A,
@@ -74,21 +57,33 @@ giveMin(_,_,B,Bi,C,Ci):-
     C=B,
     Ci=Bi.
 
+% Auxilary: calculate the distance
+% Final: the final city, Initial: the initial city, AllCities: total number of cities
+distance(Final,Initial,_,Answer):-          % If Final>=Initial then Final-Initial
+    Final>=Initial,!,                       % not sure if this cut (!) speeds up. It does no harm though.
+    Answer is (Final-Initial).
+distance(Final,Initial,AllCities,Answer):-  % Else AllCities-Final + Initial (Pacman effect)
+    Answer is ((AllCities-Initial)+Final).
 
-checkDistance(Max,Sum,Result):-
-    2*Max-Sum < 2, % check validity of Max and Sum tuple
+% Auxilary: check validity of Max and Sum tuple
+% (Sum-Max) + 1 <= Max
+
+checkDistance(Max,Sum,Result):- % If valid the result is sum (sum is valid)
+    2*Max-Sum < 2, 
     Result is Sum.
-checkDistance(_,_,10002).
+checkDistance(_,_,10002).       % else result is 10002 (a very large number, larger than cities limit)
 
 
 
-% @@@@@@@@@@@@@@@@@@- 3. Compare two lists - (subtract target state - current state) -@@@@@@@@@@@@@@@@@@
-% Take two lists, the initial and a final state, and find their difference. Note that if a>b we just find a-b, else we find city-b+a
-% ex. A. initial state [2,2,0,2] and final state [3,3,3,3] -> [1,1,3,1] 
-%        B. initial state [2,2,0,2] and final state [0,0,0,0] -> [2,2,0,2]  (assume we have 4 cities)
-%        Then it return the Max and Sum of that list
+% @@@@@@@@@@@@@@@@@@- 3. Compare two lists - (subtract target final state - current state) -@@@@@@@@@@@@@@@@@@
+% This clause is used only once, at the begging to find the sum and the max distance from the state [0,0,...]
+% Take two lists, the initial and a final state, and find their difference. 
+% ex. 1. initial state [2,2,0,2] and final state [3,3,3,3] -> [1,1,3,1] 
+%     2. initial state [2,2,0,2] and final state [0,0,0,0] -> [2,2,0,2]  (assume we have 4 cities)
+%        Then it returns the Max and Sum of that list
 
-compareWithFinal(_,[],_,Max,Sum,Max,Sum).
+
+compareWithFinal(_,[],_,Max,Sum,Max,Sum).           % If list is empty return Max = CurrentMax, Sum = CurrentSum
 compareWithFinal(FinalCity,[Current|Crest],Cities,CurrentMax,CurrentSum,Max,Sum):-
     distance(FinalCity,Current,Cities,Answer),
     NewSum is CurrentSum + Answer,
@@ -96,86 +91,85 @@ compareWithFinal(FinalCity,[Current|Crest],Cities,CurrentMax,CurrentSum,Max,Sum)
     compareWithFinal(FinalCity,Crest,Cities,NewMax,NewSum,Max,Sum),!.
 
 
-% @@@@@@@@@@@@@@@@@@- 4. Merged Multifunction -@@@@@@@@@@@@@@@@@@
-% This function is does multiple things. Takes many parameters and returns the final answer tuple
-
-% mergedFunction(Cities,_,_,Cities,Min,MinI,Min,MinI).
-% mergedFunction(CityIndex,Cars,Initial,Cities,Min,MinI,FinalMin,FinalIndexMin):-
-%     NewCityIndex is (CityIndex+1), 
-%     compareWithFinal(CityIndex,Initial,Cities,0,0,Maxy,Samy),
-%     2*Maxy-Samy < 2, % check validity of Max and Sum tuple
-%     giveMin(Samy,CityIndex,Min,MinI,NewMin,NewMinI),
-
-%     % write(Initial),write(" "),write(" now checking "), write(CityIndex),write(" "),
-%     % write(" | "),
-%     % write(Maxy),
-%     % write(" "),
-%     % write(Samy),
-%     % write(" ---> "),
-%     % writeln(NewMin),
-
-%     mergedFunction(NewCityIndex,Cars,Initial,Cities,NewMin,NewMinI,FinalMin,FinalIndexMin),!.
+% @@@@@@@@@@@@@@@@@@- 4. Create City Table -@@@@@@@@@@@@@@@@@@
+% Clause that takes the number N of cities and creates of N zeros
+% ex. N=5 -> [0, 0, 0, 0, 0] 
 
 createCityTable(0,[]).
 createCityTable(Cities,[0|Rest]):-
     NewCities is Cities-1,
     createCityTable(NewCities,Rest).
 
+
+
+% @@@@@@@@@@@@@@@@@@- 5. Create City Table -@@@@@@@@@@@@@@@@@@
+% Create invert table. Given the initial state, a list showing where every car is, we 
+% will update the CityTable list to show how many cars are in every city. 
+% ex.   Initial State:              [2, 0, 2, 2]
+%       CityTable (intially):       [0, 0, 0, 0, 0] (Cities=5)
+%       CityTable (FinalInverted):  [1, 0, 3, 0, 0]
+%   FinalInverted list means that there is 1 car at city 0, and 3 cars at city 2
+
 invertTable([],FinalInverted,FinalInverted).
 invertTable([Init|InitRest],Inverted,FinalInverted):-
-    nth0(Init,Inverted,X,R),
-    NewX is X+1,
-    nth0(Init,NewInverted,NewX,R),
-    invertTable(InitRest,NewInverted,FinalInverted),!.
+    nth0(Init,Inverted,X,R),        % clause nth0/4. X=Inverted[Init] and  R is the Rest of the list when we subtract the X
+    NewX is X+1,                    % we update the X
+    nth0(Init,NewInverted,NewX,R),  % we add again the X to the R from before. Prolog is versatile!
+    invertTable(InitRest,NewInverted,FinalInverted),!.  % we continue the recursion
 
-twoIndexGame(_, _, [],_, _, _, _, FinalMin, FinalMinI, FinalMin, FinalMinI).                   % MainIndex == AllCities : end of recursion
-twoIndexGame(MainIndex, AllCities, CityTable,[_|DoubleRest], AllCities, Sum, AllCars, Min, MinI, FinalMin, FinalMinI):-    % MaxIndex == AllCities : MaxIndex = 0 (pacman effect)
-    twoIndexGame(MainIndex, 0, CityTable,DoubleRest, AllCities, Sum, AllCars, Min, MinI, FinalMin, FinalMinI).  
-twoIndexGame(MainIndex, MainIndex, CityTable,[_|DoubleRest], AllCities, Sum, AllCars, Min, MinI, FinalMin, FinalMinI):-    % MaxIndex == MainIndex : MaxIndex++
+
+% @@@@@@@@@@@@@@@@@@- 6. Two Index Game -@@@@@@@@@@@@@@@@@@
+% This is the most important clause of this solution.
+% We take the city Table from the previous clause.
+% We have two pointers, the main shows the current element of the CityTable, the other shows the max in that CityTable (actually we use a DoubleTable-see below-to avoid the usage of nth0 clause)
+% In every step we move the main pointer to the right. The max pointer will point to the next, on the right of main pointer, non zero element.
+% We begin scanning the CityTable knowing the sum and the max. 
+% We update the sum in every step: NewSum = Sum + AllCars - AllCars*CityTable[i], i is main pointer
+% Each time we check the validity of that sum, and we update the min as well
+% When the scan is over we take the final min 
+
+
+twoIndexGame(_, _, [],_, _, _, _, FinalMin, FinalMinI, FinalMin, FinalMinI).     % MainIndex == AllCities : end of recursion. We take final Min and index of Min
+twoIndexGame(MainIndex, AllCities, CityTable,[_|DoubleRest], AllCities, Sum, AllCars, Min, MinI, FinalMin, FinalMinI):-   % MaxIndex == AllCities : MaxIndex = 0 (pacman effect)
+    twoIndexGame(MainIndex, 0, CityTable,DoubleRest, AllCities, Sum, AllCars, Min, MinI, FinalMin, FinalMinI).            % note that only the index changes, the DoubleTable continues the same
+twoIndexGame(MainIndex, MainIndex, CityTable,[_|DoubleRest], AllCities, Sum, AllCars, Min, MinI, FinalMin, FinalMinI):-   % MaxIndex == MainIndex : MaxIndex++
     NewMaxIndex is MainIndex+1,
     twoIndexGame(MainIndex, NewMaxIndex, CityTable,DoubleRest, AllCities, Sum, AllCars, Min, MinI, FinalMin, FinalMinI).
         
-twoIndexGame(MainIndex, MaxIndex, CityTable,[0|DoubleRest], AllCities, Sum, AllCars, Min, MinI, FinalMin, FinalMinI):-     % MaxIndex points to zero : MaxIndex++
+twoIndexGame(MainIndex, MaxIndex, CityTable,[0|DoubleRest], AllCities, Sum, AllCars, Min, MinI, FinalMin, FinalMinI):-    % MaxIndex points to zero : MaxIndex++
     NewMaxIndex is MaxIndex+1,
     twoIndexGame(MainIndex, NewMaxIndex, CityTable,DoubleRest, AllCities, Sum, AllCars, Min, MinI, FinalMin, FinalMinI).
 
-twoIndexGame(MainIndex, MaxIndex, [CurrentCars|CityTableRest],DoubleTable, AllCities, Sum, AllCars, Min, MinI, FinalMin, FinalMinI):-     % Pointers in normal positions
-    NewSum is (Sum + AllCars - AllCities*CurrentCars ),
-    distance(MainIndex, MaxIndex, AllCities, MaxDistance),
-    % write(Sum),write(" "), write(MaxDistance),write(" "), write(MainIndex),write(" "), write(MaxIndex),write(" "), writeln(CurrentCars),
-    checkDistance(MaxDistance,NewSum,Result),
-    giveMin(Result,MainIndex,Min,MinI,NewMin,NewMinI),
-    NewMainIndex is MainIndex+1,
-    twoIndexGame(NewMainIndex, MaxIndex, CityTableRest,DoubleTable, AllCities, NewSum, AllCars, NewMin, NewMinI, FinalMin, FinalMinI),!.
+twoIndexGame(MainIndex, MaxIndex, [CurrentCars|CityTableRest],DoubleTable, AllCities, Sum, AllCars, Min, MinI, FinalMin, FinalMinI):-  % Pointers in normal positions
+    NewSum is (Sum + AllCars - AllCities*CurrentCars ), % find new sum
+    distance(MainIndex, MaxIndex, AllCities, MaxDistance),  % find new distance for max-sum pair
+    checkDistance(MaxDistance,NewSum,Result),               % check the validity of that distance
+    giveMin(Result,MainIndex,Min,MinI,NewMin,NewMinI),      % check if we have a new min
+    NewMainIndex is MainIndex+1,                            % update main index
+    twoIndexGame(NewMainIndex, MaxIndex, CityTableRest, DoubleTable, AllCities, NewSum, AllCars, NewMin, NewMinI, FinalMin, FinalMinI),!. % run the recursion
 
     
 
-% aggregate(count, member(X,[2, 2, 3,2 , 43, 2, 3, 2]), R).
 
 % @@@@@@@@@@@@@@@@@@@@@@@@- MAIN CLAUSE -@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 round(File,Min,MinI) :-
     readInput(File, Cities, Cars, InitialState),             % 1. Parse the file
-    compareWithFinal(0,InitialState,Cities,0,0,_,Samy),
-    createCityTable(Cities,EmptyCityTable),
-    invertTable(InitialState,EmptyCityTable,CityTable),
-    % writeln(CityTable),
-    % mergedFunction(0,Cars,InitialState,Cities,10002,0,Min,MinI),
-    % write(Min),write(" "),writeln(MinI),
-    append(CityTable,CityTable,DoubleTable),!,
-    % writeln(DoubleTable),
-    DoubleTable = [_|Rest1],
-    CityTable = [_|T],
-    twoIndexGame(1, 2, T, Rest1, Cities, Samy, Cars, Samy, 0, Min, MinI),!.
-    % write(FinalMin),write(" "),writeln(FinalMinI),
+    compareWithFinal(0,InitialState,Cities,0,0,_,Samy),      % 2. Find the Initial Sum distance from zero final state
+    createCityTable(Cities,EmptyCityTable),                  % 3. Create EmptyCityTable
+    invertTable(InitialState,EmptyCityTable,CityTable),      % 4. Fill CityTable 
+    append(CityTable,CityTable,DoubleTable),!,               % 5a. Create a duplicate list CityTable@CityTable for max index
+    CityTable = [_|T],                                       % 5b. Remove first element from CityTable (we will start from the second element)
+    DoubleTable = [_|Rest1],                                 % 5c. Remove first element from DoubleTable (we will start from the second element)
+    twoIndexGame(1, 2, T, Rest1, Cities, Samy, Cars, Samy, 0, Min, MinI),!. % 6. start the game of two indexes. Cut (!) every other possible solution.
     
 
 
 
 % @@@@@@-- Testing--@@@@@@
+% Simple
+% round('tests/r1.txt', Min,MinI), write(Min),write(" "), writeln(MinI), fail.
+% 
+% With timer (not working good enough)
 % round('tests/r31.txt', Min,MinI), write(Min),write(" "), writeln(MinI),
 %    statistics(walltime, [NewTimeSinceStart | [ExecutionTime]]),
 %    write('Execution took '), write(ExecutionTime), write(' ms.'), nl.
-
-% @@@@@@-- Testing--@@@@@@
-% round('tests/r1.txt', Answer), writeln(Answer), fail.
-% round('tests/r1.txt', Min,MinI), write(Min),write(" "), writeln(MinI), fail.
