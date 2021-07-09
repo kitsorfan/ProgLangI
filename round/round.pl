@@ -124,7 +124,7 @@ invertTable([Init|InitRest],Inverted,FinalInverted):-
 % We have two pointers, the main shows the current element of the CityTable, the other shows the max in that CityTable (actually we use a DoubleTable-see below-to avoid the usage of nth0 clause)
 % In every step we move the main pointer to the right. The max pointer will point to the next, on the right of main pointer, non zero element.
 % We begin scanning the CityTable knowing the sum and the max. 
-% We update the sum in every step: NewSum = Sum + AllCars - AllCars*CityTable[i], i is main pointer
+% We update the sum in every step: NewSum = Sum + AllCars - AllCities*CityTable[i], i is main pointer
 % Each time we check the validity of that sum, and we update the min as well
 % When the scan is over we take the final min 
 
