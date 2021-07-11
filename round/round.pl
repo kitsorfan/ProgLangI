@@ -91,34 +91,26 @@ compareWithFinal(FinalCity,[Current|Crest],Cities,CurrentMax,CurrentSum,Max,Sum)
     compareWithFinal(FinalCity,Crest,Cities,NewMax,NewSum,Max,Sum),!.
 
 
+
 % @@@@@@@@@@@@@@@@@@- 4. Create City Table -@@@@@@@@@@@@@@@@@@
-% Clause that takes the number N of cities and creates of N zeros
-% ex. N=5 -> [0, 0, 0, 0, 0] 
-
-createCityTable(0,[]).
-createCityTable(Cities,[0|Rest]):-
-    NewCities is Cities-1,
-    createCityTable(NewCities,Rest).
-
-
-
-% @@@@@@@@@@@@@@@@@@- 5. Create City Table -@@@@@@@@@@@@@@@@@@
-% Create invert table. Given the initial state, a list showing where every car is, we 
-% will update the CityTable list to show how many cars are in every city. 
-% ex.   Initial State:              [2, 0, 2, 2]
-%       CityTable (intially):       [0, 0, 0, 0, 0] (Cities=5)
-%       CityTable (FinalInverted):  [1, 0, 3, 0, 0]
+% Create invert table. Given the sorted initial state, a list showing where every car is, we 
+% will create the CityTable list to show how many cars are in every city. 
+% ex.   Initial State:              [2, 0, 2, 2]   (Cities=5)
+%       CityTable (Final):  [1, 0, 3, 0, 0]
 %   FinalInverted list means that there is 1 car at city 0, and 3 cars at city 2
+% To do so we need a sorted 
 
-invertTable([],FinalInverted,FinalInverted).
-invertTable([Init|InitRest],Inverted,FinalInverted):-
-    nth0(Init,Inverted,X,R),        % clause nth0/4. X=Inverted[Init] and  R is the Rest of the list when we subtract the X
-    NewX is X+1,                    % we update the X
-    nth0(Init,NewInverted,NewX,R),  % we add again the X to the R from before. Prolog is versatile!
-    invertTable(InitRest,NewInverted,FinalInverted),!.  % we continue the recursion
+cityTable(AllCities,AllCities,[],Count,[Count]).
+cityTable(Index,AllCities,[Index|InitialRest],Count,Final):-
+    NewCount is Count+1,
+    cityTable(Index,AllCities,InitialRest,NewCount,Final).
+cityTable(Index,AllCities,Initial,Count,[Count|FinalRest]):-
+    NewIndex is Index + 1,
+    cityTable(NewIndex, AllCities, Initial,0,FinalRest).
+    
 
 
-% @@@@@@@@@@@@@@@@@@- 6. Two Index Game -@@@@@@@@@@@@@@@@@@
+% @@@@@@@@@@@@@@@@@@- 5. Two Index Game -@@@@@@@@@@@@@@@@@@
 % This is the most important clause of this solution.
 % We take the city Table from the previous clause.
 % We have two pointers, the main shows the current element of the CityTable, the other shows the max in that CityTable (actually we use a DoubleTable-see below-to avoid the usage of nth0 clause)
@@ -155,8 +147,9 @@ twoIndexGame(MainIndex, MaxIndex, [CurrentCars|CityTableRest],DoubleTable, AllCi
 round(File,Min,MinI) :-
     readInput(File, Cities, Cars, InitialState),             % 1. Parse the file
     compareWithFinal(0,InitialState,Cities,0,0,_,Samy),      % 2. Find the Initial Sum distance from zero final state
-    createCityTable(Cities,EmptyCityTable),                  % 3. Create EmptyCityTable
-    invertTable(InitialState,EmptyCityTable,CityTable),      % 4. Fill CityTable 
+    msort(InitialState,Sorted),                              % 3. Sort the initial. msort does not remove multiple
+    CitiesMinus is Cities-1,                                 
+    cityTable(0,CitiesMinus,Sorted,0,CityTable),             % 4.  Create city table   
     append(CityTable,CityTable,DoubleTable),!,               % 5a. Create a duplicate list CityTable@CityTable for max index
     CityTable = [_|T],                                       % 5b. Remove first element from CityTable (we will start from the second element)
     DoubleTable = [_|Rest1],                                 % 5c. Remove first element from DoubleTable (we will start from the second element)
