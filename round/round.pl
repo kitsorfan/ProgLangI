@@ -1,7 +1,7 @@
           
 /*
 ********************************************************************************
-  Project     : Programming Languages 1 - Assignment 2 - Exercise longest
+  Project     : Programming Languages 1 - Assignment 3 - Exercise Round
   Authors     : Stylianos Kandylakis el17088, 
                 Kitsos Orfanopoulos el17025
   -----------
