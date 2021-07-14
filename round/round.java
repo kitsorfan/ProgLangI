@@ -54,7 +54,6 @@ public class round { // we will use only one class
             if (max>Distance) max = Distance;
         }
         int [] answer = new int[2];
-        sum = checkDistance(max,sum);
         answer[0]=max;
         answer[1]=sum;
         return answer;
@@ -80,7 +79,7 @@ public class round { // we will use only one class
             while (cityTable[maxIndex%cities]==0) maxIndex++; 
             maxIndex = maxIndex%cities; //pacman effect
             sum = sum + cars - cities*cityTable[mainIndex];
-            int Distance = distance(mainIndex,maxIndex,cities);
+            int Distance = distance(maxIndex,mainIndex,cities);
             int tempsum = checkDistance(Distance, sum); // check the validity
             if (tempsum<min){
                 min = sum;
