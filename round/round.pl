@@ -146,15 +146,15 @@ twoIndexGame(MainIndex, MaxIndex, [CurrentCars|CityTableRest],DoubleTable, AllCi
 % @@@@@@@@@@@@@@@@@@@@@@@@- MAIN CLAUSE -@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 round(File,Min,MinI) :-
     readInput(File, Cities, Cars, InitialState),             % 1. Parse the file
-    compareWithFinal(0,InitialState,Cities,0,0,TempMaxy,TempSamy),      % 2. Find the Initial Sum distance from zero final state
+    compareWithFinal(0,InitialState,Cities,0,0,TempMaxy,RealSamy),      % 2. Find the Initial Sum distance from zero final state
     msort(InitialState,Sorted),                              % 3. Sort the initial. msort does not remove multiple
-    checkDistance(TempMaxy,TempSamy,Samy),
+    checkDistance(TempMaxy,RealSamy,Samy),
     CitiesMinus is Cities-1,                                 
     cityTable(0,CitiesMinus,Sorted,0,CityTable),             % 4.  Create city table   
     append(CityTable,CityTable,DoubleTable),!,               % 5a. Create a duplicate list CityTable@CityTable for max index
     CityTable = [_|T],                                       % 5b. Remove first element from CityTable (we will start from the second element)
     DoubleTable = [_|Rest1],                                 % 5c. Remove first element from DoubleTable (we will start from the second element)
-    twoIndexGame(1, 2, T, Rest1, Cities, Samy, Cars, Samy, 0, Min, MinI),!. % 6. start the game of two indexes. Cut (!) every other possible solution.
+    twoIndexGame(1, 2, T, Rest1, Cities, RealSamy, Cars, Samy, 0, Min, MinI),!. % 6. start the game of two indexes. Cut (!) every other possible solution.
     
 
 
