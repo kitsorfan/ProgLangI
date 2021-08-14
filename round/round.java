@@ -1,5 +1,4 @@
-      
-/*
+ /*
 ********************************************************************************
   Project     : Programming Languages 1 - Assignment 3 - Exercise Round
   Authors     : Stylianos Kandylakis el17088, 
@@ -47,7 +46,6 @@ public class round { // we will use only one class
     private static int[] compareWithZero(int [] initial, int cars, int cities){
         int max = 0;
         int sum = 0;
-        max = 0;
         for (int i = 0; i < cars; i++){ 
             int Distance = distance(initial[i],0,cities);
             sum += Distance;
@@ -137,3 +135,7 @@ public class round { // we will use only one class
 
 	}
 }        
+
+
+// Run the code
+//  javac round.java; java round tests\r1.txt
