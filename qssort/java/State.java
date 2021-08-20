@@ -2,6 +2,9 @@ import java.util.Collection;
 
 /* Copied from: https://courses.softlab.ntua.gr/pl1/2019a/Labs/goat.tgz
  * A generic interface for a problem state that will be used by solvers.
+ * 
+ * We just removed isBad method.
+ * 
  */
 public interface State {
   // Returns whether the state is final, i.e. the goal of the search.
