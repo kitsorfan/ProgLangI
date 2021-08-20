@@ -47,20 +47,21 @@ public class QSsort {
         // data structures. We use ArrayLists for everything
         ArrayList<Integer> queue = new ArrayList<Integer>();
         ArrayList<Integer> stack = new ArrayList<Integer>();
-        ArrayList<Integer> sortedQueue = (ArrayList<Integer>)queue.clone(); // note that we have to use clone. 
-        String response = "";
-
-
+        
+        
         // Parse the initial queue to the ArrayList
         for (int i = 0; i < N; i++)
-            queue.add(Integer.parseInt(a[i]));
+        queue.add(Integer.parseInt(a[i]));
         in.close (); //close the buffer
+        
+        ArrayList<Integer> sortedQueue = (ArrayList<Integer>)queue.clone(); // note that we have to use clone. 
+        String response = "";
         
         // sortedQueue=queue;
         Collections.sort(sortedQueue);  // Sort the queue
-
-      // ---------
-
+        
+        // ---------
+        
         Solver solver = new ZBFSolver(); //BFS solver 
         State initial = new ZSState(stack, sortedQueue, queue, response, null); //create initial state
         State result = solver.solve(initial); // call the solver
