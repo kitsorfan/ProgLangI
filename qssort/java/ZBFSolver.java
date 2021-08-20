@@ -1,5 +1,4 @@
 import java.util.*;
-import java.io.*;
 
 
 /* A class that implements a solver that explores the search space
@@ -7,7 +6,7 @@ import java.io.*;
  * is optimal in the number of moves from the initial to the final
  * state.
  */
-public class BFSolver implements Solver {
+public class ZBFSolver implements Solver {
   @Override
   public State solve (State initial) {
     Set<State> seen = new HashSet<>();
@@ -21,7 +20,7 @@ public class BFSolver implements Solver {
         return s;
       }
       for (State n : s.next())
-        if (!seen.contains(n) && !n.isBad()){
+        if (!seen.contains(n)){
           remaining.add(n);
           seen.add(n);
         }

@@ -6,8 +6,7 @@ import java.util.Collection;
 public interface State {
   // Returns whether the state is final, i.e. the goal of the search.
   public boolean isFinal();
-  // Returns whether the state is illegal and should not be explored.
-  public boolean isBad();
+
   // Returns a collection of the states that can be reached by making
   // all possible moves.  Some of these states may be bad.
   public Collection<State> next();

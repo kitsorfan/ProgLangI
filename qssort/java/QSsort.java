@@ -45,24 +45,13 @@ public class QSsort {
             queue.add(Integer.parseInt(a[i]));
         in.close ();
         
-        // print initial stack
-        // System.out.println("Initial queue " + queue);
-        
-        
-        // Object[] arr = queue.toArray();
-        // Arrays.sort(arr);
-        
         // ArrayList<Integer> sortedQueue = new ArrayList<Integer>(); 
         ArrayList<Integer> sortedQueue = (ArrayList<Integer>)queue.clone();
         // sortedQueue=queue;
         Collections.sort(sortedQueue);  // Sort cars
 
-
-  
-        
-
-        Solver solver = new BFSolver();
-        State initial = new QSState(stack, sortedQueue, queue, response, null);
+        Solver solver = new ZBFSolver();
+        State initial = new ZSState(stack, sortedQueue, queue, response, null);
         State result = solver.solve(initial);
         if (result.toString() == "") {
           System.out.println("empty");
@@ -72,8 +61,5 @@ public class QSsort {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
   }
-
-  
 }

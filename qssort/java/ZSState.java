@@ -1,10 +1,9 @@
 import java.util.*;
-import java.io.*;
 
 /* A class implementing the state of the well-known problem with the
  * wolf, the goat and the cabbage.
  */
-public class QSState implements State {
+public class ZSState implements State {
 
 
     ArrayList<Integer> stack = new ArrayList<Integer>();
@@ -17,7 +16,7 @@ public class QSState implements State {
   // The previous state.
   private State previous;
 
-  public QSState(ArrayList<Integer> s, ArrayList<Integer> fq, ArrayList<Integer> q, String r, State p) {
+  public ZSState(ArrayList<Integer> s, ArrayList<Integer> fq, ArrayList<Integer> q, String r, State p) {
     stack = s; finalQueue = fq; queue = q; 
     response = r;
     previous = p;
@@ -31,15 +30,11 @@ public class QSState implements State {
     return queue.equals(finalQueue);
   }
 
-  @Override
-  public boolean isBad() {
-    return false;
-  }
 
   @Override
   public Collection<State> next() {
     Collection<State> states = new ArrayList<>();
-    Integer temp;
+    Integer temp,temp2;
     if ((stack.size()>0) && (queue.size()>0)){
       // Q move
       ArrayList<Integer> newStack1 = (ArrayList<Integer>)stack.clone();
@@ -47,16 +42,16 @@ public class QSState implements State {
       temp = newQueue1.remove(0);
       newStack1.add(temp);
       String newResponse1 = response+"Q";
-      states.add(new QSState(newStack1, finalQueue, newQueue1, newResponse1, this));
+      states.add(new ZSState(newStack1, finalQueue, newQueue1, newResponse1, this));
 
       // S move
+      
       ArrayList<Integer> newStack2 = (ArrayList<Integer>)stack.clone();
       ArrayList<Integer> newQueue2 = (ArrayList<Integer>)queue.clone();
-      temp = newStack2.remove(newStack2.size()-1);
-      newQueue2.add(temp);
+      temp2 = newStack2.remove(newStack2.size()-1);
+      newQueue2.add(temp2);
       String newResponse2 = response+"S";
-
-      states.add(new QSState(newStack2, finalQueue, newQueue2, newResponse2, this));
+      if (temp!=temp2) states.add(new ZSState(newStack2, finalQueue, newQueue2, newResponse2, this));
     }
     else if (queue.size()>0){
       // System.out.println(response.length()+"Both");
@@ -67,7 +62,7 @@ public class QSState implements State {
       temp = newQueue1.remove(0);
       newStack1.add(temp);
       String newResponse1 = response+"Q";
-      states.add(new QSState(newStack1, finalQueue, newQueue1, newResponse1, this));
+      states.add(new ZSState(newStack1, finalQueue, newQueue1, newResponse1, this));
 
     }
     else {
@@ -78,7 +73,7 @@ public class QSState implements State {
       newQueue2.add(temp);
       String newResponse2 = response+"S";
  
-       states.add(new QSState(newStack2, finalQueue, newQueue2, newResponse2, this));
+       states.add(new ZSState(newStack2, finalQueue, newQueue2, newResponse2, this));
     
     }
     return states;
@@ -99,7 +94,7 @@ public class QSState implements State {
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
-    QSState other = (QSState) o;
+    ZSState other = (ZSState) o;
     // return ((stack==other.stack) && (queue==other.queue));
     return ((stack.equals(other.stack))&&(queue.equals(other.queue)));
   }
@@ -110,4 +105,5 @@ public class QSState implements State {
 
     return (Objects.hash(queue,stack));
   }
+
 }
