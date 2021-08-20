@@ -46,7 +46,7 @@ public class QSsort {
         in.close ();
         
         // print initial stack
-        System.out.println("Initial queue " + queue);
+        // System.out.println("Initial queue " + queue);
         
         
         // Object[] arr = queue.toArray();
@@ -58,22 +58,16 @@ public class QSsort {
         Collections.sort(sortedQueue);  // Sort cars
 
 
-        // //Adding array to stack 
-        // for (int j = 0; j < arr.length; j++)
-        //     sortedQueue.add((int)arr[j]);
-    
-
-          System.out.println("Stack after sorting " + sortedQueue);
-          System.out.println("Initial queue " + queue);
+  
         
 
         Solver solver = new BFSolver();
         State initial = new QSState(stack, sortedQueue, queue, response, null);
         State result = solver.solve(initial);
-        if (result == null) {
-          System.out.println("No solution found.");
+        if (result.toString() == "") {
+          System.out.println("empty");
         } else {
-          printSolution(result);
+          System.out.println(result);
         }
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -81,11 +75,5 @@ public class QSsort {
 
   }
 
-  // A recursive function to print the states from the initial to the final.
-  private static void printSolution(State s) {
-    if (s.getPrevious() != null) {
-      printSolution(s.getPrevious());
-    }
-    System.out.println(s);
-  }
+  
 }

@@ -17,7 +17,7 @@ public class BFSolver implements Solver {
     while (!remaining.isEmpty()) {
       State s = remaining.remove();
       if (s.isFinal()) {
-        System.out.println("whyyyyyy");
+        // System.out.println("whyyyyyy");
         return s;
       }
       for (State n : s.next())
