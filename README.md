@@ -2,7 +2,13 @@
 
 # <b> Repository for exercises in Programming Languages I course  at [ECE](https://www.ece.ntua.gr/en)⚡, [NTUA](https://www.ntua.gr/en)🎓, academic year 2020-2021
 
+
 <img alt="C++" src = "https://img.shields.io/badge/C%2B%2B-00599C?style=for-the-badge&logo=c%2B%2B&logoColor=white" height="28"> <img alt="C++" src = "https://img.shields.io/badge/SMLnj-FA6F21?style=for-the-badge&logo=AWS Lambda&logoColor=white" height="28"> <img alt="SWI Prolog" src = "https://img.shields.io/badge/Swi Prolog-F21144?style=for-the-badge&logo=Hootsuite&logoColor=white" height="28"> <img alt="Python" src = "https://img.shields.io/badge/Python-1136AA?style=for-the-badge&logo=python&logoColor=white" height="28"> <img alt="Java" src = "https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=java&logoColor=white" height="28">
+
+<img alt="Byte Code Size" src="https://img.shields.io/github/languages/code-size/kitsorfan/ProgLangI?color=red" />
+<img alt="# Lines of Code" src="https://img.shields.io/tokei/lines/github/kitsorfan/ProgLangI?color=red" />
+<img alt="Last commit" src="https://img.shields.io/github/last-commit/kitsorfan/ProgLangI?color=important" />
+
 
 
 <hr>
@@ -21,7 +27,7 @@ There were three series of exercises. Each one contained 4 problems. Specificall
 
 1. The first contained **longest** and **loop_rooms** in both **C++** and **SML**
 2. The second contained **longest** in **Prolog**, **loop_rooms** in **Python** and **qssort** in both **Prolog** and **Python**
-3. The third contained **qssort** in **Java** and **round** in both **SML**, **Prolog** and **Java**
+2. The third contained **qssort** in **Java** and **round** in both **SML**, **Prolog** and **Java**
 
 More about the problems can be found in the assignements (in Greek).
 
