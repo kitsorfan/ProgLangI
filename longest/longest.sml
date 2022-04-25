@@ -95,7 +95,7 @@ fun indexAndPrefix ((x::more),1,0) = (x,1)::(indexAndPrefix (more,2,x)) (* For t
 | indexAndPrefix _ = nil (* finish condition*)
 
 
-(*@@@@@@@@@@@@@@@@@@- 3. tupleMin (auxilary) -@@@@@@@@@@@@@@@@@@*)
+(*@@@@@@@@@@@@@@@@@@- 3. tupleMin (auxiliary) -@@@@@@@@@@@@@@@@@@*)
 (* Takes two touple (a1,b1) and (a2,b2) and compares them according to their second parameter. If b1<b2 it returns true*)
 
 fun tupleMin ((a1,b1),(a2,b2)) = 

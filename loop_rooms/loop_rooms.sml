@@ -64,7 +64,7 @@ fun removeUseless (nil,a) = nil           (* Parameter a means how many of each 
 
 
 
-(*@@@@@@@@@@@@@@@@@@- 3. Update Element (auxilary) -@@@@@@@@@@@@@@@@@@*)
+(*@@@@@@@@@@@@@@@@@@- 3. Update Element (auxiliary) -@@@@@@@@@@@@@@@@@@*)
 (* Function that takes a double array, indexes i and j, and a character value. It updates arr[i,j]=value and returns this value *)
 
 fun updateElement (arr, i, j, value) = 
@@ -103,7 +103,7 @@ fun escapablePath (arr, i, j, n, m) =
       updateElement (arr, i,j,checkElement(element)) (* We call checkElement for our current [i,j]. Note that we also have to updateElement, so when the recursion return to our current [i,j] it will update it. *)
     end
 
-(*@@@@@@@@@@@@@@@@@@- 5. Check escapability (auxilary) -@@@@@@@@@@@@@@@@@@*)
+(*@@@@@@@@@@@@@@@@@@- 5. Check escapability (auxiliary) -@@@@@@@@@@@@@@@@@@*)
 (* Simple function that given a character V or E returns 1 or 0 respectivelly. "1" is used to count the nonescapable rooms *)
 
 fun nonEscapable (#"V") = 1
