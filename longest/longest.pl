@@ -68,7 +68,7 @@ readInput(File, Days, Hospitals, Discharges) :-
     readLine(Stream, [Days, Hospitals]),   % read first line
     readLine(Stream, Discharges).          % read second line
 
-% Auxilary clause. Reads a line and seperates its elements. Returns a list.
+% Auxiliary clause. Reads a line and seperates its elements. Returns a list.
 readLine(Stream, L) :-
     read_line_to_codes(Stream, Line),
     atom_codes(Atom, Line),
@@ -105,7 +105,7 @@ addZero(A,[[0,0]|A]).
 % *@@@@@@@@@@@@@@@@@@- 5. Sort -@@@@@@@@@@@@@@@@@@*
 % Sort by the value of the prefixes.
 
-% Auxilary clause to compare two tuples
+% Auxiliary clause to compare two tuples
 myCompare(<,[A1,_],[A2,_]) :- A1 < A2.
 myCompare(>, _, _).
 

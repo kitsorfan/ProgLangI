@@ -28,7 +28,7 @@ readInput(File, Cities, Cars, InitialState) :-
     readLine(Stream, [Cities, Cars]),       % read first line
     readLine(Stream, InitialState).         % read second line
 
-% Auxilary clause. Reads a line and seperates its elements. Returns a list.
+% Auxiliary clause. Reads a line and seperates its elements. Returns a list.
 readLine(Stream, L) :-
     read_line_to_codes(Stream, Line),
     atom_codes(Atom, Line),
@@ -39,7 +39,7 @@ readLine(Stream, L) :-
 
 % @@@@@@@@@@@@@@@@@@- 2. Auxilaries -@@@@@@@@@@@@@@@@@@*)
 
-% Auxilary: give max of two numbers. C is the result
+% Auxiliary: give max of two numbers. C is the result
 giveMax(A,B,C):-    
     A>B,
     C=A,!.              % not sure if this cut (!) speeds up. It does no harm though.
@@ -47,7 +47,7 @@ giveMax(A,B,C):-
     A=<B,
     C=B.
 
-% Auxilary: give Min and its Index
+% Auxiliary: give Min and its Index
 % Ai, is the index of A
 giveMin(A,Ai,B,_,C,Ci):-
     A<B,
@@ -57,7 +57,7 @@ giveMin(_,_,B,Bi,C,Ci):-
     C=B,
     Ci=Bi.
 
-% Auxilary: calculate the distance
+% Auxiliary: calculate the distance
 % Final: the final city, Initial: the initial city, AllCities: total number of cities
 distance(Final,Initial,_,Answer):-          % If Final>=Initial then Final-Initial
     Final>=Initial,!,                       % not sure if this cut (!) speeds up. It does no harm though.
@@ -65,7 +65,7 @@ distance(Final,Initial,_,Answer):-          % If Final>=Initial then Final-Initi
 distance(Final,Initial,AllCities,Answer):-  % Else AllCities-Final + Initial (Pacman effect)
     Answer is ((AllCities-Initial)+Final).
 
-% Auxilary: check validity of Max and Sum tuple
+% Auxiliary: check validity of Max and Sum tuple
 % (Sum-Max) + 1 <= Max
 
 checkDistance(Max,Sum,Result):- % If valid the result is sum (sum is valid)
